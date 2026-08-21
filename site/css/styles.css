@@ -12,3 +12,6 @@ html{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;font-family:sans-se
 
 .navbar_wrap [data-link-hover]::before { display: none !important; }
 
+
+/* Global fix for footer overlap */
+[data-theme-section] { z-index: 10 !important; }
