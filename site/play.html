@@ -1586,8 +1586,8 @@
               }
             </style>
           </div>
-          <div style="padding-left: var(--site--margin); padding-right: var(--site--margin); width: 100%; box-sizing: border-box; overflow: hidden;">
-            <h1 class="u-text-style-display" style="font-size: clamp(2.5rem, 15.6vw, 24rem); line-height: 0.84; letter-spacing: -0.03em; margin: 0; padding: 0; color: var(--swatch--black-400); text-transform: uppercase; white-space: nowrap; width: 100%; display: block;">
+          <div id="sandbox-title-container" style="padding-left: var(--site--margin); padding-right: var(--site--margin); width: 100%; box-sizing: border-box; overflow: hidden; line-height: 0.82;">
+            <h1 id="sandbox-title-text" class="u-text-style-display" style="font-size: clamp(2.5rem, 19.3vw, 30rem); line-height: 0.82; letter-spacing: -0.025em; margin: 0; padding: 0; color: var(--swatch--black-400); text-transform: uppercase; white-space: nowrap; display: inline-block; width: auto;">
               THE SANDBOX
             </h1>
           </div>
@@ -1943,6 +1943,46 @@
         window.addEventListener('resize', updateScrollbar);
         
         setTimeout(updateScrollbar, 500);
+      })();
+    </script>
+  
+    <script>
+      (function() {
+        function fitSandboxTitle() {
+          const container = document.getElementById('sandbox-title-container');
+          const heading = document.getElementById('sandbox-title-text');
+          if (!container || !heading) return;
+          
+          const availableWidth = container.clientWidth;
+          if (availableWidth <= 0) return;
+          
+          heading.style.fontSize = '100px';
+          const textWidth = heading.scrollWidth;
+          if (textWidth > 0) {
+            const targetFontSize = (availableWidth / textWidth) * 100;
+            heading.style.fontSize = targetFontSize + 'px';
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', fitSandboxTitle);
+        } else {
+          fitSandboxTitle();
+        }
+
+        window.addEventListener('resize', fitSandboxTitle);
+        if (document.fonts) {
+          document.fonts.ready.then(fitSandboxTitle);
+        }
+
+        if (window.barba) {
+          window.barba.hooks.afterEnter(function(data) {
+            if (data && data.next && data.next.url && data.next.url.path && data.next.url.path.includes('play')) {
+              setTimeout(fitSandboxTitle, 50);
+              setTimeout(fitSandboxTitle, 200);
+            }
+          });
+        }
       })();
     </script>
   
