@@ -1587,9 +1587,11 @@
             </style>
           </div>
           <h1 class="u-sr-only">THE SANDBOX</h1>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 590 85" width="100%" class="process_heading_svg" aria-hidden="true" style="display: block; width: 100%; height: auto; padding-left: var(--site--margin); padding-right: var(--site--margin); box-sizing: border-box; overflow: visible;">
-            <text x="0" y="74" font-family="'Animo', var(--_typography---font--secondary-family), Arial, sans-serif" font-size="96" font-weight="700" letter-spacing="-0.025em" fill="currentColor">THE SANDBOX</text>
-          </svg>
+          <div style="padding-left: var(--site--margin); padding-right: var(--site--margin); width: 100%; box-sizing: border-box; overflow: visible;">
+            <svg id="sandbox-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 528 72" width="100%" class="process_heading_svg" aria-hidden="true" style="display: block; width: 100%; height: auto; padding: 0; margin: 0; overflow: visible;">
+              <text id="sandbox-text" x="0" y="68" font-family="'Animo', var(--_typography---font--secondary-family), Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="-0.025em" fill="currentColor">THE SANDBOX</text>
+            </svg>
+          </div>
 
           <header class="problems_home_header" style="padding-left: var(--site--margin); padding-right: var(--site--margin); margin-top: clamp(3rem, 6vh, 5rem); margin-bottom: clamp(3rem, 6vh, 5rem);">
             <div class="problems_home_stats">
@@ -1942,6 +1944,45 @@
         window.addEventListener('resize', updateScrollbar);
         
         setTimeout(updateScrollbar, 500);
+      })();
+    </script>
+    <script>
+      (function() {
+        function fitSandboxSvg() {
+          var svg = document.getElementById('sandbox-svg');
+          var text = document.getElementById('sandbox-text');
+          if (!svg || !text) return;
+          try {
+            var bbox = text.getBBox();
+            if (bbox && bbox.width > 0 && bbox.height > 0) {
+              svg.setAttribute('viewBox', bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height);
+            }
+          } catch(e) {}
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', fitSandboxSvg);
+        } else {
+          fitSandboxSvg();
+        }
+
+        if (document.fonts) {
+          document.fonts.ready.then(function() {
+            fitSandboxSvg();
+            setTimeout(fitSandboxSvg, 100);
+          });
+        }
+
+        window.addEventListener('resize', fitSandboxSvg);
+
+        if (window.barba) {
+          window.barba.hooks.afterEnter(function(data) {
+            if (data && data.next && data.next.url && data.next.url.path && data.next.url.path.includes('play')) {
+              setTimeout(fitSandboxSvg, 50);
+              setTimeout(fitSandboxSvg, 250);
+            }
+          });
+        }
       })();
     </script>
   
