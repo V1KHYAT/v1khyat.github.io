@@ -147,8 +147,8 @@
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <!-- Close Button & Project Name (Left) -->
             <div style="display: flex; align-items: center; gap: 2rem;">
-                <a href="#" onclick="history.back(); return false;" class="navbar_link w-inline-block" style="text-decoration: none;">
-                    <div class="footer_nav_span u-text-style-main" style="font-size: 1.25rem; line-height: 1;">✕</div>
+                <a href="/work.html" class="navbar_link project-close-btn w-inline-block" style="text-decoration: none;" aria-label="Close project">
+                    <div class="footer_nav_span u-text-style-main" style="font-size: 1.25rem; line-height: 1; padding: 0.25rem;">✕</div>
                 </a>
                 <div class="navbar_cta_wrap u-text-style-small u-text-trim-off project-navbar-title">
                     Perplexity Redesign
@@ -264,6 +264,43 @@
             });
             const activeLink = document.querySelector(currentSection.link);
             if (activeLink) activeLink.classList.add('is-active');
+        });
+
+        // Click to expand when collapsed
+        viewer.addEventListener('click', () => {
+            if (!isExpanded) expandViewer();
+        });
+
+        // Close button handler
+        function closeProject(e) {
+            if (e) e.preventDefault();
+            const returnUrl = sessionStorage.getItem('portfolio_return_url');
+            if (returnUrl && (returnUrl.includes('work') || returnUrl.includes('index') || returnUrl.endsWith('/') || returnUrl.includes('play'))) {
+                window.location.href = returnUrl;
+            } else if (document.referrer && document.referrer.includes(window.location.host)) {
+                window.location.href = document.referrer;
+            } else {
+                window.location.href = '/work.html';
+            }
+        }
+
+        document.querySelectorAll('.project-close-btn').forEach(btn => {
+            btn.addEventListener('click', closeProject);
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (isExpanded) {
+                    if (isAnimating) return;
+                    isAnimating = true;
+                    isExpanded = false;
+                    body.classList.remove('is-expanded');
+                    viewer.classList.remove('is-expanded');
+                    setTimeout(() => { isAnimating = false; }, 900);
+                } else {
+                    closeProject();
+                }
+            }
         });
 
         // Smooth Scroll for Nav Links

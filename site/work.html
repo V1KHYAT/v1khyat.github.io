@@ -2003,9 +2003,6 @@
 
     <script src="js/barba.umd.js"></script>
     <script src="js/bundle.js"></script>
-  
-
-
 
     <div id="custom-floating-scrollbar"></div>
     <script>
@@ -2025,51 +2022,29 @@
           
           scrollbar.style.display = 'block';
           
-          // Gap from top and bottom
           const offset = 12;
           const availableHeight = windowHeight - (offset * 2);
-          
           const thumbHeight = Math.max((windowHeight / documentHeight) * availableHeight, 40);
           const maxScroll = documentHeight - windowHeight;
           const maxThumbTop = windowHeight - offset - thumbHeight;
           const scrollFraction = scrollY / maxScroll;
-          
           const thumbTop = offset + (scrollFraction * (maxThumbTop - offset));
           
           scrollbar.style.height = thumbHeight + 'px';
           scrollbar.style.transform = 'translateY(' + thumbTop + 'px)';
-          
-          // Show scrollbar
           scrollbar.classList.add('scrolling');
           
-          // Hide quickly after scrolling stops
           if (hideTimeout) clearTimeout(hideTimeout);
           hideTimeout = setTimeout(() => {
             scrollbar.classList.remove('scrolling');
-          }, 600); // 600ms before fading out
+          }, 600);
         }
         
         window.addEventListener('scroll', updateScrollbar, { passive: true });
         window.addEventListener('resize', updateScrollbar);
-        
         setTimeout(updateScrollbar, 500);
       })();
     </script>
-  
-    
-  
-
-
-
-  
-
-  
-
-  
-
-  
-
-  
 
   <script id="work-projects-custom-script">
     (function() {
@@ -2091,7 +2066,6 @@
           const contentRect = content.getBoundingClientRect();
           const triggerRect = trigger.getBoundingClientRect();
           
-          // Exact vertical center of hovered project title relative to content container
           const targetY = (triggerRect.top - contentRect.top) + (triggerRect.height / 2);
 
           if (window.gsap) {
@@ -2155,6 +2129,14 @@
         initWorkProjects();
       }
 
+      // Track return URL when clicking into any project
+      document.addEventListener('click', function(e) {
+        var link = e.target.closest('a[href*="project-"]');
+        if (link) {
+          sessionStorage.setItem('portfolio_return_url', window.location.href);
+        }
+      });
+
       if (window.barba) {
         window.barba.hooks.afterEnter(function(data) {
           if (data && data.next && data.next.url && data.next.url.path && data.next.url.path.includes('work')) {
@@ -2164,4 +2146,4 @@
       }
     })();
   </script>
-</body></html><!--/$-->
+</body></html>

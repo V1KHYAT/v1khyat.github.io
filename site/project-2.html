@@ -15,17 +15,23 @@
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400&display=swap" rel="stylesheet">
-    <!-- Preload first slide to eliminate loading lag -->
+    <!-- Preload first slide -->
     <link rel="preload" as="image" href="images/CoLab/01.webp">
     
     <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+
       body.body, html {
         margin: 0;
         padding: 0;
         background-color: var(--swatch--black-400) !important;
         height: 100vh;
+        height: 100dvh;
         width: 100vw;
         overflow: hidden !important;
+        touch-action: pan-y;
       }
       
       body.body {
@@ -38,7 +44,7 @@
       /* Massive Background Title */
       .background-project-title {
         position: fixed;
-        top: 40vh;
+        top: 38vh;
         left: 50%;
         transform: translate(-50%, -70%);
         width: 90vw;
@@ -47,9 +53,10 @@
         color: var(--swatch--beige-100);
         z-index: 1;
         font-family: var(--_typography---font--primary-family);
-        font-size: clamp(4rem, 12vw, 15rem);
-        line-height: 1.1;
+        font-size: clamp(3.5rem, 11vw, 13rem);
+        line-height: 1;
         text-transform: uppercase;
+        letter-spacing: -0.02em;
         pointer-events: none;
         will-change: transform, opacity;
         transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -59,14 +66,14 @@
         transform: translate(-50%, -150%);
       }
 
-      /* Navbar - identical to project-1 */
+      /* Navbar */
       .dynamic-navbar {
         position: fixed; 
         width: 100%; 
         top: 0; 
         left: 0; 
         z-index: 100; 
-        padding: 1.5rem 2rem; 
+        padding: 1.25rem 1.75rem; 
         box-sizing: border-box;
         mix-blend-mode: difference;
         pointer-events: none;
@@ -79,13 +86,27 @@
         opacity: 0;
         transform: translateY(10px);
         transition: opacity 0.5s ease, transform 0.5s ease;
+        font-weight: 500;
       }
       .is-expanded .project-navbar-title {
-        opacity: 0.7; 
+        opacity: 0.85; 
         transform: translateY(0);
       }
 
-      /* Viewer Frame - same black as background so it blends */
+      .slide-counter {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        font-family: var(--_typography---font--tertiary-family, monospace);
+        font-size: 0.875rem;
+        letter-spacing: 0.05em;
+      }
+      .is-expanded .slide-counter {
+        opacity: 0.8;
+        transform: translateY(0);
+      }
+
+      /* Viewer Frame */
       .project-viewer-frame {
         position: fixed;
         bottom: 0;
@@ -93,25 +114,61 @@
         transform: translate(-50%, 0);
         z-index: 10;
         
-        width: 90vw;
-        max-width: 1100px; 
-        height: 60vh; 
+        width: clamp(320px, 86vw, 1100px); 
+        height: clamp(280px, 58vh, 640px); 
         
         overflow: hidden;
         background-color: var(--swatch--black-400);
         border-radius: 1.5rem 1.5rem 0 0; 
+        cursor: pointer;
         
         will-change: width, max-width, height, border-radius;
-        transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-                    max-width 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-                    height 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-                    border-radius 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: width 0.75s cubic-bezier(0.16, 1, 0.3, 1), 
+                    max-width 0.75s cubic-bezier(0.16, 1, 0.3, 1), 
+                    height 0.75s cubic-bezier(0.16, 1, 0.3, 1), 
+                    border-radius 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                    box-shadow 0.4s ease;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.45);
       }
+
+      .project-viewer-frame:not(.is-expanded):hover {
+        box-shadow: 0 -15px 50px rgba(0, 0, 0, 0.65);
+      }
+
       .project-viewer-frame.is-expanded {
         width: 100vw;
         max-width: 100vw;
         height: 100vh;
+        height: 100dvh;
         border-radius: 0;
+        cursor: default;
+        box-shadow: none;
+      }
+
+      /* Hint overlay for collapsed state */
+      .viewer-click-hint {
+        position: absolute;
+        bottom: 1.25rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+        color: var(--swatch--beige-100);
+        padding: 0.45rem 1rem;
+        border-radius: 100px;
+        font-size: 0.8125rem;
+        letter-spacing: 0.03em;
+        pointer-events: none;
+        transition: opacity 0.4s ease, transform 0.4s ease;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+      .is-expanded .viewer-click-hint {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+        pointer-events: none;
       }
 
       /* Slider container */
@@ -119,53 +176,101 @@
         display: flex;
         align-items: center;
         height: 100%;
-        padding-left: 0;
-        gap: 0;
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                    padding-left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                    gap 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        width: max-content;
+        gap: clamp(16px, 2.5vw, 36px);
+        transition: transform 0.6s cubic-bezier(0.25, 1, 0.3, 1);
         will-change: transform;
       }
 
-      .project-viewer-frame.is-expanded .slider-container {
-        padding-left: 15vw;
-        gap: 3vw;
-      }
-
-      /* Slides - fill viewer in collapsed state */
+      /* Slides - Collapsed vs Expanded */
       .presentation-slide {
-        flex: 0 0 100%;
+        flex: 0 0 auto;
+        width: clamp(280px, 86vw, 1100px);
         height: 100%;
-        min-height: 0;
-        min-width: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: filter 0.8s ease, opacity 0.8s ease, transform 0.8s ease, flex-basis 0.8s cubic-bezier(0.16, 1, 0.3, 1), height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        transition: filter 0.6s cubic-bezier(0.25, 1, 0.3, 1), 
+                    opacity 0.6s cubic-bezier(0.25, 1, 0.3, 1), 
+                    transform 0.6s cubic-bezier(0.25, 1, 0.3, 1), 
+                    width 0.75s cubic-bezier(0.16, 1, 0.3, 1), 
+                    height 0.75s cubic-bezier(0.16, 1, 0.3, 1);
         opacity: 1;
         filter: blur(0px);
         transform: scale(1);
+        user-select: none;
+        -webkit-user-select: none;
       }
 
-      /* In expanded state: carousel mode */
+      .presentation-slide img {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        display: block;
+        border-radius: 4px;
+        pointer-events: none;
+      }
+
+      /* In expanded state */
       .project-viewer-frame.is-expanded .presentation-slide {
-        flex: 0 0 70vw;
-        height: 80%;
-        opacity: 0.5;
-        filter: blur(6px);
+        width: min(78vw, calc((100vh - 120px) * (16 / 9)));
+        height: min(calc(78vw * (9 / 16)), calc(100vh - 120px));
+        opacity: 0.35;
+        filter: blur(5px);
         transform: scale(0.92);
+        cursor: pointer;
       }
 
       .project-viewer-frame.is-expanded .presentation-slide.is-active {
         opacity: 1;
         filter: blur(0px);
         transform: scale(1);
+        cursor: default;
       }
 
-      .presentation-slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
+      /* Navigation Arrows */
+      .nav-arrow-btn {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 50;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease, background-color 0.25s ease, transform 0.25s ease;
+      }
+      .is-expanded .nav-arrow-btn {
+        opacity: 0.75;
+        pointer-events: auto;
+      }
+      .nav-arrow-btn:hover {
+        opacity: 1 !important;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-50%) scale(1.08);
+      }
+      .nav-arrow-btn.is-prev {
+        left: 1.5rem;
+      }
+      .nav-arrow-btn.is-next {
+        right: 1.5rem;
+      }
+      .nav-arrow-btn.is-disabled {
+        opacity: 0.2 !important;
+        pointer-events: none;
       }
 
       .nav-highlight-link {
@@ -176,6 +281,40 @@
       .nav-highlight-link.is-active {
           opacity: 1;
       }
+
+      /* Mobile adjustments */
+      @media (max-width: 767px) {
+        .background-project-title {
+          font-size: clamp(2.5rem, 14vw, 5.5rem);
+          top: 32vh;
+        }
+        .project-viewer-frame {
+          width: 94vw;
+          height: clamp(240px, 50vh, 420px);
+          border-radius: 1rem 1rem 0 0;
+        }
+        .project-viewer-frame.is-expanded .presentation-slide {
+          width: min(90vw, calc((100vh - 120px) * (16 / 9)));
+          height: min(calc(90vw * (9 / 16)), calc(100vh - 120px));
+          transform: scale(0.96);
+          filter: blur(2px);
+          opacity: 0.45;
+        }
+        .project-viewer-frame.is-expanded .presentation-slide.is-active {
+          transform: scale(1);
+          filter: blur(0px);
+          opacity: 1;
+        }
+        .nav-arrow-btn {
+          display: none; /* Rely on fluid horizontal touch gestures on mobile */
+        }
+        .dynamic-navbar {
+          padding: 1rem;
+        }
+        .navbar-nav-links {
+          display: none !important; /* Keep mobile header clean */
+        }
+      }
     </style>
 </head>
 <body class="body">
@@ -183,35 +322,47 @@
     <!-- Massive Background Title -->
     <div class="background-project-title">COLAB</div>
     
-    <!-- Custom Navbar - identical structure to project-1 -->
+    <!-- Custom Navbar -->
     <header class="dynamic-navbar">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <!-- Close Button & Project Name (Left) -->
-            <div style="display: flex; align-items: center; gap: 2rem;">
-                <a href="#" onclick="history.back(); return false;" class="navbar_link w-inline-block" style="text-decoration: none;">
-                    <div class="footer_nav_span u-text-style-main" style="font-size: 1.25rem; line-height: 1;">✕</div>
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <a href="/work.html" class="navbar_link project-close-btn w-inline-block" style="text-decoration: none;" aria-label="Close project">
+                    <div class="footer_nav_span u-text-style-main" style="font-size: 1.25rem; line-height: 1; padding: 0.25rem;">✕</div>
                 </a>
-                <!-- Starts hidden, fades in on expand -->
                 <div class="navbar_cta_wrap u-text-style-small u-text-trim-off project-navbar-title">
                     CoLab Presentation
                 </div>
             </div>
 
-            <!-- Scroll Links (Right) -->
-            <div class="navbar_cta_wrap u-text-style-small u-text-trim-off" style="display: flex; gap: 1rem; align-items: center;">
-                <div class="footer_nav_span u-text-style-main nav-highlight-link is-active" id="nav-1" style="cursor: pointer; padding: 0.25rem;">Overview</div>
-                <div class="footer_nav_span u-text-style-main nav-highlight-link" id="nav-6" style="cursor: pointer; padding: 0.25rem;">Insights</div>
-                <div class="footer_nav_span u-text-style-main nav-highlight-link" id="nav-12" style="cursor: pointer; padding: 0.25rem;">Solution</div>
-                <div class="footer_nav_span u-text-style-main nav-highlight-link" id="nav-18" style="cursor: pointer; padding: 0.25rem;">Usability Testing</div>
+            <!-- Right section: Counter & Nav Chapters -->
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <div class="slide-counter" id="slide-counter-display">01 / 35</div>
+
+                <div class="navbar_cta_wrap u-text-style-small u-text-trim-off navbar-nav-links" style="display: flex; gap: 1rem; align-items: center;">
+                    <div class="footer_nav_span u-text-style-main nav-highlight-link is-active" id="nav-1" style="cursor: pointer; padding: 0.25rem;">Overview</div>
+                    <div class="footer_nav_span u-text-style-main nav-highlight-link" id="nav-6" style="cursor: pointer; padding: 0.25rem;">Insights</div>
+                    <div class="footer_nav_span u-text-style-main nav-highlight-link" id="nav-12" style="cursor: pointer; padding: 0.25rem;">Solution</div>
+                    <div class="footer_nav_span u-text-style-main nav-highlight-link" id="nav-18" style="cursor: pointer; padding: 0.25rem;">Usability Testing</div>
+                </div>
             </div>
         </div>
     </header>
 
+    <!-- Side Navigation Arrows (Desktop/Tablet) -->
+    <button class="nav-arrow-btn is-prev is-disabled" id="btn-prev-slide" aria-label="Previous slide">←</button>
+    <button class="nav-arrow-btn is-next" id="btn-next-slide" aria-label="Next slide">→</button>
+
     <!-- Project Viewer Frame -->
-    <div class="project-viewer-frame">
+    <div class="project-viewer-frame" id="viewer-frame">
+        <div class="viewer-click-hint">
+            <span>Click to expand</span>
+            <span>↗</span>
+        </div>
+
         <div class="slider-container" id="slider-root">
             <!-- First slide pre-built for zero-lag initial render -->
-            <div class="presentation-slide is-active">
+            <div class="presentation-slide is-active" data-index="0">
                 <img src="images/CoLab/01.webp" alt="Slide 01" loading="eager" decoding="sync">
             </div>
             <!-- Remaining slides injected by JS -->
@@ -220,8 +371,11 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const viewer = document.querySelector('.project-viewer-frame');
+        const viewer = document.getElementById('viewer-frame');
         const sliderRoot = document.getElementById('slider-root');
+        const counterDisplay = document.getElementById('slide-counter-display');
+        const prevBtn = document.getElementById('btn-prev-slide');
+        const nextBtn = document.getElementById('btn-next-slide');
         const body = document.body;
         
         let isExpanded = false;
@@ -233,65 +387,57 @@
         // Collect the pre-built first slide
         const loadedSlides = [sliderRoot.querySelector('.presentation-slide')];
 
-        // Build remaining slides (2 onwards)
+        // Build remaining slides (2 to 35)
         for (let i = 2; i <= totalSlides; i++) {
             const slide = document.createElement('div');
             slide.className = 'presentation-slide';
+            slide.dataset.index = (i - 1).toString();
             
             const img = document.createElement('img');
             const slideNum = i < 10 ? '0' + i : String(i);
             img.src = `images/CoLab/${slideNum}.webp`;
             img.alt = `Slide ${slideNum}`;
-            img.loading = i <= 3 ? 'eager' : 'lazy';
+            img.loading = i <= 4 ? 'eager' : 'lazy';
             
-            img.onerror = () => { slide.dataset.invalid = "true"; slide.style.display = 'none'; };
+            img.onerror = () => { 
+                slide.dataset.invalid = "true"; 
+                slide.style.display = 'none'; 
+                updateSlidePositions();
+            };
             
             slide.appendChild(img);
             sliderRoot.appendChild(slide);
             loadedSlides.push(slide);
         }
 
-        function getValidSlideCount() {
-            return loadedSlides.filter(s => s.dataset.invalid !== "true").length;
+        function getValidSlides() {
+            return loadedSlides.filter(s => s.dataset.invalid !== "true");
         }
 
-        // --- Expand / Shrink ---
-        viewer.addEventListener('transitionend', (e) => {
-            if (e.propertyName === 'width' || e.propertyName === 'max-width') {
-                isAnimating = false;
+        // --- Precise Slide Positioning ---
+        function updateSlidePositions() {
+            const valid = getValidSlides();
+            const count = valid.length;
+            if (currentSlide >= count) currentSlide = Math.max(0, count - 1);
+            if (currentSlide < 0) currentSlide = 0;
+
+            const activeSlide = valid[currentSlide] || valid[0];
+            if (!activeSlide) return;
+
+            if (isExpanded) {
+                const slideWidth = activeSlide.offsetWidth || (window.innerWidth * 0.78);
+                const gap = (window.innerWidth <= 767) ? 16 : 24;
+                const centerOffset = (window.innerWidth - slideWidth) / 2;
+                
+                // Calculate position relative to container
+                const targetX = centerOffset - (currentSlide * (slideWidth + gap));
+                sliderRoot.style.transform = `translateX(${targetX}px)`;
+            } else {
+                sliderRoot.style.transform = `translateX(0px)`;
             }
-        });
 
-        function expandViewer() {
-            if (isAnimating || isExpanded) return;
-            isAnimating = true;
-            isExpanded = true;
-            body.classList.add('is-expanded');
-            viewer.classList.add('is-expanded');
-            // Safety timeout in case transitionend doesn't fire
-            setTimeout(() => { isAnimating = false; }, 900);
-        }
-
-        function shrinkViewer() {
-            if (isAnimating || !isExpanded) return;
-            isAnimating = true;
-            isExpanded = false;
-            body.classList.remove('is-expanded');
-            viewer.classList.remove('is-expanded');
-            currentSlide = 0;
-            updateSlider();
-            setTimeout(() => { isAnimating = false; }, 900);
-        }
-
-        // --- Slide navigation ---
-        function updateSlider() {
-            // In expanded mode: slide = 70vw, gap = 3vw, stride = 73vw
-            // In collapsed mode: stride doesn't matter (always slide 0)
-            const stride = isExpanded ? 73 : 0;
-            sliderRoot.style.transform = `translateX(-${currentSlide * stride}vw)`;
-            
-            // Update active slide state
-            loadedSlides.forEach((slide, index) => {
+            // Update active states
+            valid.forEach((slide, index) => {
                 if (index === currentSlide) {
                     slide.classList.add('is-active');
                 } else {
@@ -299,7 +445,22 @@
                 }
             });
 
-            // Update Nav Highlights
+            // Update counter
+            const curStr = (currentSlide + 1) < 10 ? '0' + (currentSlide + 1) : String(currentSlide + 1);
+            const totStr = count < 10 ? '0' + count : String(count);
+            if (counterDisplay) counterDisplay.textContent = `${curStr} / ${totStr}`;
+
+            // Update arrow button states
+            if (prevBtn) {
+                if (currentSlide === 0) prevBtn.classList.add('is-disabled');
+                else prevBtn.classList.remove('is-disabled');
+            }
+            if (nextBtn) {
+                if (currentSlide >= count - 1) nextBtn.classList.add('is-disabled');
+                else nextBtn.classList.remove('is-disabled');
+            }
+
+            // Update Chapter Highlights
             document.querySelectorAll('.nav-highlight-link').forEach(l => l.classList.remove('is-active'));
             let targetNav = 'nav-1';
             if (currentSlide >= 17) targetNav = 'nav-18';
@@ -309,22 +470,79 @@
             if (navLink) navLink.classList.add('is-active');
         }
 
+        // --- Expand / Shrink ---
+        function expandViewer() {
+            if (isAnimating || isExpanded) return;
+            isAnimating = true;
+            isExpanded = true;
+            body.classList.add('is-expanded');
+            viewer.classList.add('is-expanded');
+            
+            setTimeout(() => {
+                updateSlidePositions();
+                isAnimating = false;
+            }, 350);
+        }
+
+        function shrinkViewer() {
+            if (isAnimating || !isExpanded) return;
+            isAnimating = true;
+            isExpanded = false;
+            body.classList.remove('is-expanded');
+            viewer.classList.remove('is-expanded');
+            currentSlide = 0;
+            updateSlidePositions();
+            
+            setTimeout(() => { isAnimating = false; }, 400);
+        }
+
         function goToSlide(index) {
             if (isSliding) return;
-            const validCount = getValidSlideCount();
+            const valid = getValidSlides();
             if (index < 0) {
                 shrinkViewer();
                 return;
             }
-            if (index >= validCount) return;
+            if (index >= valid.length) return;
             
             isSliding = true;
             currentSlide = index;
-            updateSlider();
-            setTimeout(() => { isSliding = false; }, 650);
+            updateSlidePositions();
+            setTimeout(() => { isSliding = false; }, 350);
         }
 
-        // --- Global wheel listener ---
+        // Click on preview frame when collapsed -> Expand immediately!
+        viewer.addEventListener('click', (e) => {
+            if (!isExpanded) {
+                expandViewer();
+            }
+        });
+
+        // Click on individual slides when expanded
+        loadedSlides.forEach((slide, index) => {
+            slide.addEventListener('click', (e) => {
+                if (!isExpanded) {
+                    expandViewer();
+                    return;
+                }
+                if (index !== currentSlide) {
+                    e.stopPropagation();
+                    goToSlide(index);
+                }
+            });
+        });
+
+        // Arrow Buttons
+        if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+        if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+        // Window resize
+        window.addEventListener('resize', () => {
+            updateSlidePositions();
+        });
+
+        // --- Wheel & Trackpad Listener ---
+        let wheelTimeout = null;
         window.addEventListener('wheel', (e) => {
             e.preventDefault();
 
@@ -332,62 +550,125 @@
                 expandViewer();
                 return;
             }
-            if (!isExpanded) {
-                return; // Do nothing on scroll-up when collapsed
-            }
-            if (isExpanded && currentSlide === 0 && e.deltaY < 0) {
+            if (!isExpanded) return;
+
+            if (isExpanded && currentSlide === 0 && e.deltaY < -30) {
                 shrinkViewer();
                 return;
             }
-            if (isExpanded && !isSliding && Math.abs(e.deltaY) > 20) {
-                if (e.deltaY > 0) {
-                    goToSlide(currentSlide + 1);
-                } else {
-                    goToSlide(currentSlide - 1);
+
+            if (isExpanded && !isSliding) {
+                const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+                if (Math.abs(delta) > 18) {
+                    if (delta > 0) goToSlide(currentSlide + 1);
+                    else goToSlide(currentSlide - 1);
                 }
             }
         }, { passive: false });
 
-        // Touch support
+        // --- Touch & Swipe Gesture Handling (Mobile & Tablet) ---
+        let touchStartX = 0;
         let touchStartY = 0;
+        let touchStartTime = 0;
+
         window.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
+            touchStartTime = Date.now();
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
-            const delta = touchStartY - e.touches[0].clientY;
-            if (!isExpanded && delta > 10) { e.preventDefault(); expandViewer(); return; }
-            if (!isExpanded) return; // Do nothing on swipe-down when collapsed
-            if (isExpanded && currentSlide === 0 && delta < -10) { e.preventDefault(); shrinkViewer(); return; }
-            if (isExpanded && !isSliding && Math.abs(delta) > 50) {
+            if (!touchStartX || !touchStartY) return;
+            const deltaX = touchStartX - e.touches[0].clientX;
+            const deltaY = touchStartY - e.touches[0].clientY;
+
+            // If horizontal gesture is dominant, prevent native pull-to-refresh
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
                 e.preventDefault();
-                goToSlide(delta > 0 ? currentSlide + 1 : currentSlide - 1);
-                touchStartY = e.touches[0].clientY;
             }
         }, { passive: false });
 
-        // Keyboard
-        window.addEventListener('keydown', (e) => {
-            if (!isExpanded) {
-                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') expandViewer();
+        window.addEventListener('touchend', (e) => {
+            if (!touchStartX || !touchStartY) return;
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const deltaX = touchStartX - touchEndX;
+            const deltaY = touchStartY - touchEndY;
+            const duration = Date.now() - touchStartTime;
+
+            // Expand on swipe up when collapsed
+            if (!isExpanded && deltaY > 30) {
+                expandViewer();
                 return;
             }
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goToSlide(currentSlide + 1);
-            else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goToSlide(currentSlide - 1);
+
+            if (isExpanded) {
+                // Horizontal Swipe
+                if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                    if (deltaX > 0) {
+                        goToSlide(currentSlide + 1); // Swipe left -> next slide
+                    } else {
+                        goToSlide(currentSlide - 1); // Swipe right -> prev slide
+                    }
+                } 
+                // Vertical swipe down on slide 0 -> shrink
+                else if (currentSlide === 0 && deltaY < -50 && Math.abs(deltaY) > Math.abs(deltaX)) {
+                    shrinkViewer();
+                }
+            }
+
+            touchStartX = 0;
+            touchStartY = 0;
+        }, { passive: true });
+
+        // Keyboard Navigation
+        window.addEventListener('keydown', (e) => {
+            if (!isExpanded) {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') expandViewer();
+                return;
+            }
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+                goToSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                goToSlide(currentSlide - 1);
+            } else if (e.key === 'Escape') {
+                shrinkViewer();
+            }
         });
 
-        // Nav clicks
+        // Nav Chapter clicks
         function navGoTo(index) {
             if (!isExpanded) expandViewer();
-            // Wait for expand animation then go to slide
-            setTimeout(() => goToSlide(index), isExpanded ? 0 : 850);
+            setTimeout(() => goToSlide(index), isExpanded ? 0 : 400);
         }
-        document.getElementById('nav-1').addEventListener('click', () => navGoTo(0));
-        document.getElementById('nav-6').addEventListener('click', () => navGoTo(5));
-        document.getElementById('nav-12').addEventListener('click', () => navGoTo(11));
-        document.getElementById('nav-18').addEventListener('click', () => navGoTo(17));
+        const n1 = document.getElementById('nav-1');
+        const n6 = document.getElementById('nav-6');
+        const n12 = document.getElementById('nav-12');
+        const n18 = document.getElementById('nav-18');
+        if (n1) n1.addEventListener('click', () => navGoTo(0));
+        if (n6) n6.addEventListener('click', () => navGoTo(5));
+        if (n12) n12.addEventListener('click', () => navGoTo(11));
+        if (n18) n18.addEventListener('click', () => navGoTo(17));
+
+        // Close button handler
+        function handleClose(e) {
+            if (e) e.preventDefault();
+            const returnUrl = sessionStorage.getItem('portfolio_return_url');
+            if (returnUrl && (returnUrl.includes('work') || returnUrl.includes('index') || returnUrl.endsWith('/') || returnUrl.includes('play'))) {
+                window.location.href = returnUrl;
+            } else if (document.referrer && document.referrer.includes(window.location.host)) {
+                window.location.href = document.referrer;
+            } else {
+                window.location.href = '/work.html';
+            }
+        }
+        document.querySelectorAll('.project-close-btn').forEach(btn => {
+            btn.addEventListener('click', handleClose);
+        });
+
+        // Initialize positions
+        updateSlidePositions();
     });
     </script>
-
 </body>
 </html>

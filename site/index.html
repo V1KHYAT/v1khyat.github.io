@@ -2448,9 +2448,6 @@
 
     <script src="js/barba.umd.js"></script>
     <script src="js/bundle.js"></script>
-  
-
-
 
     <div id="custom-floating-scrollbar"></div>
     <script>
@@ -2470,43 +2467,38 @@
           
           scrollbar.style.display = 'block';
           
-          // Gap from top and bottom
           const offset = 12;
           const availableHeight = windowHeight - (offset * 2);
-          
           const thumbHeight = Math.max((windowHeight / documentHeight) * availableHeight, 40);
           const maxScroll = documentHeight - windowHeight;
           const maxThumbTop = windowHeight - offset - thumbHeight;
           const scrollFraction = scrollY / maxScroll;
-          
           const thumbTop = offset + (scrollFraction * (maxThumbTop - offset));
           
           scrollbar.style.height = thumbHeight + 'px';
           scrollbar.style.transform = 'translateY(' + thumbTop + 'px)';
-          
-          // Show scrollbar
           scrollbar.classList.add('scrolling');
           
-          // Hide quickly after scrolling stops
           if (hideTimeout) clearTimeout(hideTimeout);
           hideTimeout = setTimeout(() => {
             scrollbar.classList.remove('scrolling');
-          }, 600); // 600ms before fading out
+          }, 600);
         }
         
         window.addEventListener('scroll', updateScrollbar, { passive: true });
         window.addEventListener('resize', updateScrollbar);
-        
         setTimeout(updateScrollbar, 500);
       })();
     </script>
 
     <script>
-      // Save scroll position before navigating to project pages
-      document.querySelectorAll('a[href*="project-"]').forEach(function(link) {
-        link.addEventListener('click', function() {
+      // Save return URL & scroll position before navigating to project pages
+      document.addEventListener('click', function(e) {
+        var link = e.target.closest('a[href*="project-"]');
+        if (link) {
+          sessionStorage.setItem('portfolio_return_url', window.location.href);
           sessionStorage.setItem('indexScrollY', window.scrollY.toString());
-        });
+        }
       });
       // Restore scroll position when returning from a project
       (function() {
@@ -2519,11 +2511,4 @@
         }
       })();
     </script>
-    <script>
-      // Removed navbar logo scrolling logic to keep it visible
-    </script>
-  
-
-
-
-</body></html><!--/$-->
+</body></html>
