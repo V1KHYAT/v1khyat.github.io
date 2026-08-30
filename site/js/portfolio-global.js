@@ -133,15 +133,37 @@
     const root = scope || document;
     const videos = Array.from(root.querySelectorAll('video'));
     videos.forEach(function (v) {
-      if (v.hasAttribute('autoplay') || v.getAttribute('data-video') === 'playpause') {
-        v.muted = true;
-        v.setAttribute('playsinline', '');
-        const playPromise = v.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(function () {
-            // Autoplay policy fallback: ready on interaction
-          });
-        }
+      v.muted = true;
+      v.defaultMuted = true;
+      v.playsInline = true;
+      v.setAttribute('muted', '');
+      v.setAttribute('playsinline', '');
+      v.setAttribute('webkit-playsinline', '');
+      v.setAttribute('autoplay', '');
+      v.setAttribute('loop', '');
+      
+      // Force load & play
+      if (v.readyState < 2) {
+        v.load();
+      }
+      const playPromise = v.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function () {
+          // Autoplay policy fallback: ready on interaction
+        });
+      }
+    });
+
+    // Also support hover-to-play on video card wraps
+    const videoWraps = Array.from(root.querySelectorAll('[data-video="playpause"], .process_home_video'));
+    videoWraps.forEach(function (wrap) {
+      const vid = wrap.querySelector('video');
+      if (vid) {
+        wrap.removeEventListener('mouseenter', wrap._vkhPlay);
+        wrap._vkhPlay = function () {
+          vid.play().catch(function () {});
+        };
+        wrap.addEventListener('mouseenter', wrap._vkhPlay);
       }
     });
   }
