@@ -1,2 +1,8 @@
 node_modules/
 .tempmediaStorage/
+*.bak*
+*.bak-*
+*.png
+!site/images/**/*.png
+!site/media/**/*.png
+!site/**/*.png
