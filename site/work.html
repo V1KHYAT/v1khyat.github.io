@@ -2003,6 +2003,7 @@
 
     <script src="js/barba.umd.js"></script>
     <script src="js/bundle.js"></script>
+    <script src="js/portfolio-global.js"></script>
 
     <div id="custom-floating-scrollbar"></div>
     <script>
@@ -2046,104 +2047,5 @@
       })();
     </script>
 
-  <script id="work-projects-custom-script">
-    (function() {
-      function initWorkProjects() {
-        const content = document.querySelector('.services_home_content');
-        const triggers = Array.from(document.querySelectorAll('[data-project-trigger]'));
-        const imgWrap = document.querySelector('.work_projects_img-wrap');
-        const imgItems = Array.from(document.querySelectorAll('.work_projects_img-item'));
-        
-        if (!content || !triggers.length || !imgWrap) return;
-
-        let currentIndex = -1;
-
-        function setProject(index, immediate) {
-          const trigger = triggers[index];
-          if (!trigger) return;
-          currentIndex = index;
-
-          const contentRect = content.getBoundingClientRect();
-          const triggerRect = trigger.getBoundingClientRect();
-          
-          const targetY = (triggerRect.top - contentRect.top) + (triggerRect.height / 2);
-
-          if (window.gsap) {
-            gsap.killTweensOf(imgWrap);
-            if (immediate) {
-              gsap.set(imgWrap, { y: targetY });
-            } else {
-              gsap.to(imgWrap, {
-                y: targetY,
-                duration: 0.38,
-                ease: "power2.out",
-                overwrite: "auto"
-              });
-            }
-          } else {
-            imgWrap.style.transform = 'translateY(' + targetY + 'px)';
-          }
-
-          // Toggle active image
-          imgItems.forEach(item => {
-            const itemIndex = parseInt(item.getAttribute('data-img-index'), 10);
-            const img = item.querySelector('.work_projects_img');
-            if (img) {
-              if (itemIndex === index) {
-                img.classList.add('is-active');
-              } else {
-                img.classList.remove('is-active');
-              }
-            }
-          });
-
-          // Highlight hovered title, dim others
-          triggers.forEach((t, i) => {
-            if (i === index) {
-              t.classList.add('is-active');
-            } else {
-              t.classList.remove('is-active');
-            }
-          });
-        }
-
-        triggers.forEach((trigger, idx) => {
-          trigger.addEventListener('mouseenter', function() {
-            setProject(idx, false);
-          });
-        });
-
-        // Set initial state on first item
-        setProject(0, true);
-        setTimeout(function() { setProject(0, true); }, 150);
-        setTimeout(function() { setProject(0, true); }, 600);
-
-        window.addEventListener('resize', function() {
-          if (currentIndex >= 0) setProject(currentIndex, true);
-        });
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initWorkProjects);
-      } else {
-        initWorkProjects();
-      }
-
-      // Track return URL when clicking into any project
-      document.addEventListener('click', function(e) {
-        var link = e.target.closest('a[href*="project-"]');
-        if (link) {
-          sessionStorage.setItem('portfolio_return_url', window.location.href);
-        }
-      });
-
-      if (window.barba) {
-        window.barba.hooks.afterEnter(function(data) {
-          if (data && data.next && data.next.url && data.next.url.path && data.next.url.path.includes('work')) {
-            setTimeout(initWorkProjects, 100);
-          }
-        });
-      }
-    })();
-  </script>
+  
 </body></html>

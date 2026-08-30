@@ -1904,6 +1904,7 @@
 
     <script src="js/barba.umd.js"></script>
     <script src="js/bundle.js"></script>
+    <script src="js/portfolio-global.js"></script>
   
 
 
@@ -1956,45 +1957,7 @@
         setTimeout(updateScrollbar, 500);
       })();
     </script>
-    <script>
-      (function() {
-        function fitSandboxSvg() {
-          var svg = document.getElementById('sandbox-svg');
-          var text = document.getElementById('sandbox-text');
-          if (!svg || !text) return;
-          try {
-            var bbox = text.getBBox();
-            if (bbox && bbox.width > 0 && bbox.height > 0) {
-              svg.setAttribute('viewBox', bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height);
-            }
-          } catch(e) {}
-        }
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', fitSandboxSvg);
-        } else {
-          fitSandboxSvg();
-        }
-
-        if (document.fonts) {
-          document.fonts.ready.then(function() {
-            fitSandboxSvg();
-            setTimeout(fitSandboxSvg, 100);
-          });
-        }
-
-        window.addEventListener('resize', fitSandboxSvg);
-
-        if (window.barba) {
-          window.barba.hooks.afterEnter(function(data) {
-            if (data && data.next && data.next.url && data.next.url.path && data.next.url.path.includes('play')) {
-              setTimeout(fitSandboxSvg, 50);
-              setTimeout(fitSandboxSvg, 250);
-            }
-          });
-        }
-      })();
-    </script>
+    
   
     
   
