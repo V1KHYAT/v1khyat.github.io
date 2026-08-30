@@ -142,14 +142,10 @@
       v.setAttribute('autoplay', '');
       v.setAttribute('loop', '');
       
-      // Force load & play
-      if (v.readyState < 2) {
-        v.load();
-      }
       const playPromise = v.play();
       if (playPromise !== undefined) {
         playPromise.catch(function () {
-          // Autoplay policy fallback: ready on interaction
+          // Browser autoplay restriction fallback
         });
       }
     });
@@ -161,7 +157,9 @@
       if (vid) {
         wrap.removeEventListener('mouseenter', wrap._vkhPlay);
         wrap._vkhPlay = function () {
-          vid.play().catch(function () {});
+          if (vid.paused) {
+            vid.play().catch(function () {});
+          }
         };
         wrap.addEventListener('mouseenter', wrap._vkhPlay);
       }
