@@ -194,12 +194,60 @@
     });
   }
 
+  // --- 5. NAVBAR HIGHLIGHTING ---
+  function highlightNavbar(scope) {
+    const root = scope || document;
+    const links = Array.from(root.querySelectorAll('.navbar_link'));
+    if (!links.length) return;
+    
+    links.forEach(function(l) { l.classList.remove('w--current'); });
+
+    let currentPath = window.location.pathname;
+    if (currentPath !== '/' && currentPath.endsWith('/')) {
+        currentPath = currentPath.slice(0, -1);
+    }
+    if (currentPath.endsWith('.html')) {
+        currentPath = currentPath.slice(0, -5);
+    }
+    
+    let matched = false;
+    
+    links.forEach(function(l) {
+      let href = l.getAttribute('href');
+      if (!href) return;
+      
+      if (href !== '/') {
+        if (href.endsWith('.html')) {
+           href = href.slice(0, -5);
+        }
+        if (currentPath === href || currentPath.endsWith(href)) {
+          l.classList.add('w--current');
+          matched = true;
+        }
+      } else {
+        if (currentPath === '' || currentPath === '/') {
+          l.classList.add('w--current');
+          matched = true;
+        }
+      }
+    });
+
+    if (!matched && (currentPath === '' || currentPath === '/' || currentPath.endsWith('/index'))) {
+      links.forEach(function(l) {
+        if (l.getAttribute('href') === '/') {
+          l.classList.add('w--current');
+        }
+      });
+    }
+  }
+
   // --- MASTER INITIALIZER FOR ANY CONTAINER / PAGE ---
   function initAllPageComponents(scope) {
     const root = scope || document;
     fitSandboxSvg(root);
     initWorkProjects(root);
     initVideos(root);
+    highlightNavbar(root);
 
     // Refresh ScrollTrigger and Lenis if present
     if (window.ScrollTrigger) {
