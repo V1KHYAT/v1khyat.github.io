@@ -150,6 +150,24 @@
       }
     });
 
+    // IntersectionObserver to guarantee play when scrolled into view
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            const v = entry.target;
+            if (v && v.play) {
+              v.play().catch(function () {});
+            }
+          }
+        });
+      }, { threshold: 0.05 });
+
+      videos.forEach(function (v) {
+        io.observe(v);
+      });
+    }
+
     // Also support hover-to-play on video card wraps
     const videoWraps = Array.from(root.querySelectorAll('[data-video="playpause"], .process_home_video'));
     videoWraps.forEach(function (wrap) {
