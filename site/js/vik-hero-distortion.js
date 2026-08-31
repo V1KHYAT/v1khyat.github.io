@@ -98,21 +98,24 @@
   }
 
   /* ============================ NAVBAR TAGLINE SWAP ============================ */
-
-  function initNavSwap() {
+  var navSwapInitialized = false;
+  function updateNavSwap() {
     var hero = document.querySelector(SECTION_SELECTOR);
     if (!hero) return;
+    var inHero = window.scrollY < hero.offsetHeight * 0.7;
+    document.body.classList.toggle("vkh-nav-inhero", inHero);
+  }
+
+  function initNavSwap() {
+    updateNavSwap();
+    if (navSwapInitialized) return;
+    navSwapInitialized = true;
     var ticking = false;
-    function update() {
-      ticking = false;
-      var inHero = window.scrollY < hero.offsetHeight * 0.7;
-      document.body.classList.toggle("vkh-nav-inhero", inHero);
+    function onScrollResize() {
+      if (!ticking) { ticking = true; requestAnimationFrame(function() { ticking = false; updateNavSwap(); }); }
     }
-    window.addEventListener("scroll", function () {
-      if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    }, { passive: true });
-    window.addEventListener("resize", function () { ticking || (ticking = true, requestAnimationFrame(update)); });
-    update();
+    window.addEventListener("scroll", onScrollResize, { passive: true });
+    window.addEventListener("resize", onScrollResize);
   }
 
   /* ============================ WEBGL EFFECT ============================ */
@@ -146,21 +149,6 @@
     }
   }
 
-  /* Re-bind when Barba.js swaps the page container (e.g. returning home) */
-  function watchForSwaps() {
-    if (!window.MutationObserver) return;
-    var pending = false;
-    var observer = new MutationObserver(function () {
-      if (pending) return;
-      pending = true;
-      setTimeout(function () {
-        pending = false;
-        var section = document.querySelector(SECTION_SELECTOR);
-        if (section && !section.hasAttribute("data-vkh-bound")) init();
-      }, 60);
-    });
-    observer.observe(document.documentElement, { childList: true, subtree: true });
-  }
 
   var activeCleanup = null;
 
@@ -637,6 +625,12 @@
       if (!inView || document.hidden) { lastFrameTime = now; return; }
       var cw = container.clientWidth, chh = container.clientHeight;
       if (cw === 0 || chh === 0) { lastFrameTime = now; return; }
+      
+      var currentW = Math.floor(renderer.domElement.width / renderer.getPixelRatio());
+      var currentH = Math.floor(renderer.domElement.height / renderer.getPixelRatio());
+      if (cw !== currentW || chh !== currentH) {
+          resize();
+      }
 
       var dt = lastFrameTime ? Math.min(now - lastFrameTime, 50) : 16.666;
       lastFrameTime = now;
@@ -730,11 +724,15 @@
 
   /* ============================ START ============================ */
 
+  window.initVikHero = function() {
+    init();
+    initNavSwap();
+  };
+
   function boot() {
     var start = function () {
       init();
       initNavSwap();
-      watchForSwaps();
       drivePreloader();
     };
     if (document.readyState === "loading") {

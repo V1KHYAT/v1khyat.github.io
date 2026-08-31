@@ -248,6 +248,7 @@
     initWorkProjects(root);
     initVideos(root);
     highlightNavbar(root);
+    if (window.initVikHero) window.initVikHero();
 
     // Refresh ScrollTrigger and Lenis if present
     if (window.ScrollTrigger) {
