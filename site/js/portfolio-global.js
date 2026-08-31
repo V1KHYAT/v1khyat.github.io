@@ -216,16 +216,19 @@
       let href = l.getAttribute('href');
       if (!href) return;
       
-      if (href !== '/') {
-        if (href.endsWith('.html')) {
-           href = href.slice(0, -5);
-        }
-        if (currentPath === href || currentPath.endsWith(href)) {
+      if (href === '/' || href === 'index.html' || href === 'index') {
+        if (currentPath === '' || currentPath === '/' || currentPath.endsWith('/index')) {
           l.classList.add('w--current');
           matched = true;
         }
       } else {
-        if (currentPath === '' || currentPath === '/') {
+        if (href.endsWith('.html')) {
+           href = href.slice(0, -5);
+        }
+        // Also remove leading slash for matching logic if it has it
+        if (href.startsWith('/')) href = href.slice(1);
+        
+        if (currentPath === '/' + href || currentPath.endsWith('/' + href) || currentPath === href) {
           l.classList.add('w--current');
           matched = true;
         }
@@ -234,7 +237,8 @@
 
     if (!matched && (currentPath === '' || currentPath === '/' || currentPath.endsWith('/index'))) {
       links.forEach(function(l) {
-        if (l.getAttribute('href') === '/') {
+        let href = l.getAttribute('href');
+        if (href === '/' || href === 'index.html') {
           l.classList.add('w--current');
         }
       });
