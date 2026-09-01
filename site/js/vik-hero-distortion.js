@@ -101,7 +101,10 @@
   var navSwapInitialized = false;
   function updateNavSwap() {
     var hero = document.querySelector(SECTION_SELECTOR);
-    if (!hero) return;
+    if (!hero) {
+      document.body.classList.remove("vkh-nav-inhero");
+      return;
+    }
     var inHero = window.scrollY < hero.offsetHeight * 0.7;
     document.body.classList.toggle("vkh-nav-inhero", inHero);
   }
