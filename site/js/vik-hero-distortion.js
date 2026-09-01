@@ -123,8 +123,12 @@
 
   /* ============================ WEBGL EFFECT ============================ */
 
-  function init() {
-    var section = document.querySelector(SECTION_SELECTOR);
+  function init(scope) {
+    var root = scope || document;
+    var section = root.querySelector(SECTION_SELECTOR);
+    if (!section && root.matches && root.matches(SECTION_SELECTOR)) {
+      section = root;
+    }
     var container = section && section.querySelector(CONTAINER_ATTR);
     var canvas = section && section.querySelector("." + CANVAS_CLASS);
 
@@ -727,8 +731,8 @@
 
   /* ============================ START ============================ */
 
-  window.initVikHero = function() {
-    init();
+  window.initVikHero = function(scope) {
+    init(scope);
     initNavSwap();
   };
 
