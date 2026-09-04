@@ -54,9 +54,7 @@
     }
   }
 
-  function bumpBoot(p) {
-    bootState.target = Math.max(bootState.target, p);
-  }
+  function bumpBoot(p) { bootState.target = Math.max(bootState.target, p); if (bootState.target >= 1) finishBoot(); }
 
   function finishBoot() {
     if (bootState.done) return;
@@ -755,6 +753,7 @@
 
   boot();
 })();
+
 
 
 
