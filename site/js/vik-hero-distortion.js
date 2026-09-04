@@ -423,6 +423,7 @@
     var flowMaterial, distortionMaterial, mesh, texture;
     var ready = false, isFirstFrame = true;
     var renderRaf = null;
+    var containerRO = null;
     var inView = true, lastFrameTime = 0;
 
     function createRenderTarget(w, h) {
@@ -448,8 +449,8 @@
       flowTargetA = createRenderTarget(192, 192);
       flowTargetB = createRenderTarget(192, 192);
 
-      var fw = Math.min(container.clientWidth, 512);
-      var fh = Math.min(container.clientHeight, 512);
+      var fw = Math.max(1, Math.min(container.clientWidth || 512, 512));
+      var fh = Math.max(1, Math.min(container.clientHeight || 512, 512));
       frameTargetA = createRenderTarget(fw, fh);
       frameTargetB = createRenderTarget(fw, fh);
 
@@ -557,6 +558,8 @@
       window.addEventListener("touchmove", onWindowTouchMove, { passive: true });
       window.addEventListener("touchend", onWindowTouchEnd, { passive: true });
       window.addEventListener("resize", resize);
+      containerRO = new ResizeObserver(function() { if (container.clientWidth > 0 && container.clientHeight > 0) resize(); });
+      containerRO.observe(container);
       // Pause rendering when the hero scrolls out of view
       if ("IntersectionObserver" in window) {
         new IntersectionObserver(function (entries) {
@@ -714,6 +717,7 @@
       window.removeEventListener("touchmove", onWindowTouchMove);
       window.removeEventListener("touchend", onWindowTouchEnd);
       window.removeEventListener("resize", resize);
+        if (containerRO) containerRO.disconnect();
       delete window.__vkhDebug;
       try {
         if (flowTargetA) flowTargetA.dispose();
@@ -751,3 +755,6 @@
 
   boot();
 })();
+
+
+
