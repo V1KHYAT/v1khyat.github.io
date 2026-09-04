@@ -1,6 +1,6 @@
 /* ============================================================
    VIKHYATKAUSHIK hero wordmark — WebGL flowmap distortion
-   Ported from supersolid.agency's hero logo effect.
+   Ported from Awesome.agency's hero logo effect.
    - Center text rendered in "Animo" (same as TAKING IN THE WORLD)
    - Flowmap -> UV warp -> chromatic aberration -> motion blur
    - Velocity integration is frame-rate normalized
@@ -17,7 +17,7 @@
   var FONT_STACK = '"Animo", Arial, sans-serif';
   var TRACKING = "-0.045em"; // tighter tracking -> bigger glyphs at full width
 
-  /* Tuned toward supersolid's fluid, stretchy feel */
+  /* Tuned toward Awesome's fluid, stretchy feel */
   var CONFIG = {
     falloff: 0.24,
     alpha: 0.97,
@@ -164,7 +164,7 @@
     var w = {};
     for (var key in CONFIG) w[key] = CONFIG[key];
 
-    /* ---------- Shaders (from supersolid app.js) ---------- */
+    /* ---------- Shaders (from Awesome app.js) ---------- */
 
     // Flowmap pass: accumulates mouse velocity into a texture
     var flowmapFragment = `
@@ -211,7 +211,7 @@
 
     // Distortion pass: flow warp + RGB split + motion blur.
     // Dark ink on light page: splits the ALPHA channel per offset and tints
-    // fringes with palette-matched colors (same geometry as supersolid).
+    // fringes with palette-matched colors (same geometry as Awesome).
     // Flow is aspect-corrected so horizontal and vertical strokes distort
     // with equal pixel strength (uv y-units are taller than x-units).
     var distortionFragment = `
@@ -755,6 +755,7 @@
 
   boot();
 })();
+
 
 
 

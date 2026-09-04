@@ -1,1 +1,0 @@
-const puppeteer = require("puppeteer"); (async () => { const browser = await puppeteer.launch(); const page = await browser.newPage(); page.on("requestfailed", request => { console.log("Failed:", request.url(), request.failure().errorText); }); await page.goto("file://" + process.cwd() + "/site/index.html", {waitUntil: "networkidle0"}); await browser.close(); })();

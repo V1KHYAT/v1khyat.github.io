@@ -1,1 +1,0 @@
-const fs = require('fs'); let html = fs.readFileSync('site/index.html', 'utf8'); html = html.replace('data-highlight-scroll-end=\"bottom 50%\"', 'data-highlight-scroll-end=\"bottom 70%\"'); fs.writeFileSync('site/index.html', html);

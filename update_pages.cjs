@@ -1,1 +1,0 @@
-const fs = require('fs'); const path = require('path'); const indexHtml = fs.readFileSync('site/index.html', 'utf8'); const backupHtml = fs.readFileSync('site/extracted_sections.html', 'utf8'); console.log('Length:', indexHtml.length);
