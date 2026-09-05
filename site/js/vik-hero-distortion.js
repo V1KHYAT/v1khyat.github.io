@@ -688,9 +688,11 @@
         faviconCtx.arc(16, 16, 16, 0, Math.PI * 2);
         faviconCtx.clip();
           faviconCtx.filter = "blur(4px)";
-          var srcSize = Math.min(renderer.domElement.width, renderer.domElement.height) * 0.6;
-          var srcX = (renderer.domElement.width - srcSize) * 0.2;
-          var srcY = (renderer.domElement.height - srcSize) * 0.2;
+          
+            var srcSize = Math.min(renderer.domElement.width, renderer.domElement.height) * 0.85;
+            var srcX = (renderer.domElement.width - srcSize) / 2;
+            var srcY = renderer.domElement.height - srcSize;
+
           faviconCtx.drawImage(renderer.domElement, srcX, srcY, srcSize, srcSize, -4, -4, 40, 40);
           faviconCtx.restore();
         
