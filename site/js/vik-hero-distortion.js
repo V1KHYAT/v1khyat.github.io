@@ -54,7 +54,7 @@
     }
   }
 
-  function bumpBoot(p) { bootState.target = Math.max(bootState.target, p); if (bootState.target >= 1) finishBoot(); }
+  function bumpBoot(p) { bootState.target = Math.max(bootState.target, p); }
 
   function finishBoot() {
     if (bootState.done) return;
@@ -88,7 +88,8 @@
       var p = Math.max(0, Math.min(1, bootState.progress));
       if (line) line.style.transform = "scaleX(" + p + ")";
       if (count) count.textContent = String(Math.round(p * 100)).padStart(2, "0");
-      requestAnimationFrame(tick);
+        if (p >= 0.99 && !bootState.done) finishBoot();
+        requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
     // hard failsafe: never hang on the preloader
@@ -760,6 +761,8 @@
 
   boot();
 })();
+
+
 
 
 
