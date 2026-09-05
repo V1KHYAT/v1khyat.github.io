@@ -687,13 +687,14 @@
         faviconCtx.beginPath();
         faviconCtx.arc(16, 16, 16, 0, Math.PI * 2);
         faviconCtx.clip();
-          faviconCtx.filter = "blur(4px)";
           
-            var srcSize = Math.min(renderer.domElement.width, renderer.domElement.height) * 0.85;
+            // Sample a smaller 25% box slightly offset from the center
+            // By zooming in, the flowmap movement becomes very obvious in the 32x32 icon.
+            var srcSize = Math.min(renderer.domElement.width, renderer.domElement.height) * 0.25;
             var srcX = (renderer.domElement.width - srcSize) / 2;
-            var srcY = renderer.domElement.height - srcSize;
+            var srcY = (renderer.domElement.height / 2) + (srcSize * 0.1);
+            faviconCtx.drawImage(renderer.domElement, srcX, srcY, srcSize, srcSize, 0, 0, 32, 32);
 
-          faviconCtx.drawImage(renderer.domElement, srcX, srcY, srcSize, srcSize, -4, -4, 40, 40);
           faviconCtx.restore();
         
         var dataUrl = faviconCanvas.toDataURL("image/png");
