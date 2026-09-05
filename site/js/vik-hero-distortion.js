@@ -158,19 +158,7 @@
   var activeCleanup = null;
 
   function buildEffect(section, container, canvas) {
-    var faviconCanvas = document.createElement("canvas");
-    faviconCanvas.width = 32;
-    faviconCanvas.height = 32;
-    var faviconCtx = faviconCanvas.getContext("2d");
-    var lastFaviconUpdate = 0;
     
-    var faviconLinks = Array.from(document.querySelectorAll("link[rel*='icon']"));
-    if (faviconLinks.length === 0) {
-      var fl = document.createElement("link");
-      fl.rel = "icon";
-      document.head.appendChild(fl);
-      faviconLinks.push(fl);
-    }
 
 
     /* ---------- Config ---------- */
@@ -680,27 +668,7 @@
       
       renderer.render(mesh, camera);
 
-      if (now - lastFaviconUpdate > 66) { // ~15 FPS
-        lastFaviconUpdate = now;
-        faviconCtx.clearRect(0, 0, 32, 32);
-        faviconCtx.save();
-        faviconCtx.beginPath();
-        faviconCtx.arc(16, 16, 16, 0, Math.PI * 2);
-        faviconCtx.clip();
-          
-            // Sample a smaller 25% box slightly offset from the center
-            // By zooming in, the flowmap movement becomes very obvious in the 32x32 icon.
-            var srcSize = Math.min(renderer.domElement.width, renderer.domElement.height) * 0.25;
-            var srcX = (renderer.domElement.width - srcSize) / 2;
-            var srcY = (renderer.domElement.height / 2) + (srcSize * 0.1);
-            faviconCtx.drawImage(renderer.domElement, srcX, srcY, srcSize, srcSize, 0, 0, 32, 32);
-
-          faviconCtx.restore();
-        
-        var dataUrl = faviconCanvas.toDataURL("image/png");
-        faviconLinks.forEach(function(link) { link.href = dataUrl; });
-
-      }
+      
 
 
       // Ping-pong swaps
