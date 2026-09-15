@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { background: black; color: white; }
+        .vkh_preloader { position: fixed; inset: 0; background: #111; z-index: 999; }
+        body.vkh-boot-done .vkh_preloader { opacity: 0; transition: opacity 0.5s; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div class="vkh_preloader" id="vkh_preloader" aria-hidden="true">
+      <div class="vkh_preloader_meta"><span class="vkh_preloader_count">00</span></div>
+    </div>
+    <script>
+        var bootState = { start: performance.now(), target: 0, progress: 0, done: false };
+        function preloaderEl() { return document.getElementById("vkh_preloader"); }
+        function bumpBoot(p) { bootState.target = Math.max(bootState.target, p); }
+        function finishBoot() {
+            if (bootState.done) return;
+            bootState.done = true;
+            console.log('finishBoot called at', performance.now() - bootState.start);
+            var elapsed = performance.now() - bootState.start;
+            var wait = Math.max(0, 900 - elapsed);
+            setTimeout(function () {
+                document.body.classList.add("vkh-boot-done");
+                bumpBoot(1);
+                var el = preloaderEl();
+                if (el) setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1000);
+            }, wait);
+        }
+        function drivePreloader() {
+            var el = preloaderEl();
+            bootState.start = performance.now();
+            if (!el) { finishBoot(); return; }
+            var count = el.querySelector(".vkh_preloader_count");
+            var last = performance.now();
+            function tick(now) {
+                if (bootState.done && !el.parentNode) return;
+                var dt = Math.min((now - last) / 1000, 0.05);
+                last = now;
+                bootState.progress += (bootState.target - bootState.progress) * Math.min(1, dt * 6);
+                if (bootState.target >= 1) bootState.progress += (1 - bootState.progress) * Math.min(1, dt * 4);
+                var p = Math.max(0, Math.min(1, bootState.progress));
+                if (count) count.textContent = String(Math.round(p * 100)).padStart(2, "0");
+                if (p >= 0.99 && !bootState.done) finishBoot();
+                requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+            setTimeout(finishBoot, 4000);
+        }
+        drivePreloader();
+        setTimeout(() => bumpBoot(0.45), 50);
+        setTimeout(() => bumpBoot(0.80), 100);
+        setTimeout(() => bumpBoot(1), 150);
+    </script>
+</body>
+</html>
