@@ -2414,6 +2414,123 @@
         }
       })();
     </script>
+
+
+
+<!-- MAGNETIC_TRAIL_START -->
+<style id="magnetic-trail-mod">
+  /* Override default gap_home_cover */
+  .gap_home_cover {
+    overflow: visible !important; 
+    z-index: 1; /* Keep images behind text */
+    pointer-events: none;
+  }
+  .gap_home_inner {
+    z-index: 10 !important;
+    position: relative;
+    pointer-events: none; /* Let mouse events pass through to wrap */
+  }
+  /* Original images hide permanently */
+  .gap_home_image {
+    opacity: 0 !important;
+  }
+  
+  /* Cloned images for the trail */
+  .trail-image-clone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    transform-origin: center center;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+</style>
+
+<script>
+  (function() {
+    const wrap = document.querySelector('.gap_home_wrap');
+    const cover = document.querySelector('.gap_home_cover');
+    if (!wrap || !cover) return;
+    
+    // Grab original image sources
+    const originalImages = Array.from(cover.querySelectorAll('.gap_home_image'));
+    if (!originalImages.length) return;
+    const srcs = originalImages.map(img => img.src);
+
+    let currentIndex = 0;
+    let lastMousePos = { x: 0, y: 0 };
+    const distanceThreshold = 50; // Pixels mouse must move to spawn next image
+    
+    // Create a pool or just append/remove elements
+    function spawnImage() {
+      const src = srcs[currentIndex];
+      
+      const clone = document.createElement('img');
+      clone.src = src;
+      clone.className = 'trail-image-clone';
+      
+      // Random rotation and scale
+      const rot = (Math.random() - 0.5) * 40; // -20 to 20 deg
+      const scale = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
+      const offsetX = (Math.random() - 0.5) * 60; // -30px to 30px
+      const offsetY = (Math.random() - 0.5) * 60;
+      
+      clone.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rot}deg) scale(${scale})`;
+      
+      cover.appendChild(clone);
+      
+      // Force reflow to ensure initial state is painted
+      clone.getBoundingClientRect();
+      
+      // Trigger fade in instantly
+      clone.style.opacity = '1';
+      
+      // Wait a moment before fading out to create the "trail" hang time
+      setTimeout(() => {
+        clone.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        clone.style.opacity = '0';
+        clone.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${rot}deg) scale(${scale * 0.7})`;
+        
+        // Remove from DOM after fade out
+        setTimeout(() => {
+          if (clone.parentNode) {
+            clone.parentNode.removeChild(clone);
+          }
+        }, 600);
+      }, 300); // Hang time before starting to fade out
+
+      // Move to next image
+      currentIndex = (currentIndex + 1) % srcs.length;
+    }
+
+    // Attach to mouse/touch move on the wrap section
+    function handleMove(clientX, clientY) {
+      const dx = clientX - lastMousePos.x;
+      const dy = clientY - lastMousePos.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      if (dist > distanceThreshold) {
+        spawnImage();
+        lastMousePos = { x: clientX, y: clientY };
+      }
+    }
+
+    wrap.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+    wrap.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+  })();
+</script>
+<!-- MAGNETIC_TRAIL_END -->
 </body></html>
 
 
