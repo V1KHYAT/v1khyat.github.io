@@ -2467,56 +2467,44 @@
     const ctx = canvas.getContext('2d');
 
     const SLOTS = [
-      { y: 0, size: 1.19, w: 206, h: 167 },
-      { y: -30, size: 1.10, w: 214, h: 167 },
-      { y: 30, size: 1.20, w: 214, h: 167 },
-      { y: -60, size: 1.06, w: 186, h: 144 },
-      { y: 60, size: 1.06, w: 186, h: 144 },
-      { y: -94, size: 0.91, w: 157, h: 122 },
-      { y: 94, size: 0.91, w: 157, h: 122 },
-      { y: -122, size: 0.80, w: 139, h: 109 },
-      { y: 122, size: 0.80, w: 139, h: 109 },
-      { y: -18, size: 1.04, w: 166, h: 129 },
-      { y: 18, size: 1.02, w: 161, h: 126 },
-      { y: -52, size: 0.97, w: 153, h: 118 },
-      { y: 52, size: 0.97, w: 153, h: 118 },
-      { y: -78, size: 0.87, w: 137, h: 108 },
-      { y: 78, size: 0.87, w: 137, h: 108 },
-      { y: -134, size: 0.70, w: 111, h: 83 },
-      { y: 134, size: 0.70, w: 111, h: 83 },
-      { y: 10, size: 0.91, w: 140, h: 108 }
+      { y: 0, size: 1.25, baseH: 195 },
+      { y: -30, size: 1.15, baseH: 185 },
+      { y: 30, size: 1.20, baseH: 190 },
+      { y: -60, size: 1.10, baseH: 175 },
+      { y: 60, size: 1.10, baseH: 175 },
+      { y: -94, size: 0.95, baseH: 155 },
+      { y: 94, size: 0.95, baseH: 155 },
+      { y: -122, size: 0.85, baseH: 140 },
+      { y: 122, size: 0.85, baseH: 140 },
+      { y: -18, size: 1.10, baseH: 175 },
+      { y: 18, size: 1.08, baseH: 170 },
+      { y: -52, size: 1.02, baseH: 165 },
+      { y: 52, size: 1.02, baseH: 165 },
+      { y: -78, size: 0.92, baseH: 150 },
+      { y: 78, size: 0.92, baseH: 150 },
+      { y: -134, size: 0.75, baseH: 120 },
+      { y: 134, size: 0.75, baseH: 120 },
+      { y: 10, size: 0.95, baseH: 155 }
     ];
 
-    const SPEED = 0.00018;
-    const MAX_SPEED = 0.0008;
-    const FOLLOW = 0.22;
+    const SPEED = 0.00010; // smooth and slightly slower
     const SPREAD_X = 250;
-    const MOUSE_SPEED_BOOST = 0.002;
-    const FORWARD_PUSH_AMOUNT = 40;
-    const UPWARD_PUSH_AMOUNT = 30;
-    const SCALE_OUT_MIN = 0.68;
-    const SCALE_OUT_MAX = 1.48;
 
     function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
     function lerp(a, b, t) { return a + (b - a) * t; }
 
-    function drawRoundedImage(ctx, img, x, y, w, h, r = 0) {
+    function drawOriginalAspectImage(ctx, img, x, y, w, h, r = 0) {
       if (!img || !img.complete || img.naturalWidth <= 0) return;
-      const imgAspect = img.naturalWidth / img.naturalHeight;
-      const boxAspect = w / h;
-      let sx, sy, sw, sh;
-      if (imgAspect > boxAspect) {
-        sh = img.naturalHeight;
-        sw = sh * boxAspect;
-        sx = (img.naturalWidth - sw) / 2;
-        sy = 0;
-      } else {
-        sw = img.naturalWidth;
-        sh = sw / boxAspect;
-        sx = 0;
-        sy = (img.naturalHeight - sh) / 2;
+      if (r > 0) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, r);
+        ctx.clip();
+        ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, x, y, w, h);
+        ctx.restore();
+        return;
       }
-      ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+      ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, x, y, w, h);
     }
 
     const imgs = SLOTS.map((_, i) => {
@@ -2526,11 +2514,6 @@
       return img;
     });
 
-    let pointer = { x: 0, y: 0 };
-    let lerpedPointer = { x: 0, y: 0 };
-    let smooth = { x: 0, y: 0 };
-    let dir = { x: 1, y: 0 };
-    let lastMoveAt = 0;
     let phase = 0;
     let lastTime = 0;
 
@@ -2541,9 +2524,6 @@
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      pointer = { x: w / 2, y: h / 2 };
-      lerpedPointer = { x: w / 2, y: h / 2 };
-      smooth = { x: w / 2, y: h / 2 };
     }
 
     function frame(now) {
@@ -2555,34 +2535,9 @@
       const dt = Math.min(32, now - (lastTime || now));
       lastTime = now;
 
-      lerpedPointer.x += (pointer.x - lerpedPointer.x) * 0.18;
-      lerpedPointer.y += (pointer.y - lerpedPointer.y) * 0.18;
+      phase += dt * SPEED;
 
-      const prevSX = smooth.x;
-      const prevSY = smooth.y;
-      smooth.x += (lerpedPointer.x - smooth.x) * FOLLOW;
-      smooth.y += (lerpedPointer.y - smooth.y) * FOLLOW;
-
-      const vx = smooth.x - prevSX;
-      const vy = smooth.y - prevSY;
-      const vmag = Math.hypot(vx, vy);
-
-      if (vmag > 0.35) {
-        const tx = vx / vmag;
-        const ty = vy / vmag;
-        dir.x += (tx - dir.x) * 0.2;
-        dir.y += (ty - dir.y) * 0.2;
-        const m = Math.hypot(dir.x, dir.y) || 1;
-        dir.x /= m;
-        dir.y /= m;
-        lastMoveAt = now;
-      }
-
-      const speed01 = clamp(vmag / 18, 0, 1);
-      const currentSpeed = clamp(SPEED + speed01 * MOUSE_SPEED_BOOST, SPEED, MAX_SPEED);
-      phase += dt * currentSpeed;
-
-      // Lock center to middle of container
+      // Center of container
       const cx = W / 2;
       const cy = H / 2;
 
@@ -2604,28 +2559,22 @@
 
         const rawCenterScale = Math.max(0, 1 - Math.abs(pathNorm));
         const easedCenterScale = rawCenterScale * rawCenterScale * (3 - 2 * rawCenterScale);
-        const centerScale = lerp(0.06, 0.9, easedCenterScale);
+        const centerScale = lerp(0.06, 0.95, easedCenterScale);
 
-        const dx = x - cx;
-        const dy = y - cy;
-        const directionalProjection = clamp((dx * dir.x + dy * dir.y) / Math.max(1, SPREAD_X), -1, 1);
-        const oppositeProjection = -directionalProjection;
-        const backwardAmount = (oppositeProjection + 1) * 0.5;
+        const img = imgs[i % imgs.length];
+        const aspect = (img.naturalWidth && img.naturalHeight) ? (img.naturalWidth / img.naturalHeight) : 0.75;
 
-        const movementBoost = lerp(1, 1.18, speed01);
-        const directionalScale = lerp(SCALE_OUT_MIN, SCALE_OUT_MAX, backwardAmount) * movementBoost;
-        const scale = centerScale * directionalScale * 1.14;
-
-        const forwardPush = Math.max(0, directionalProjection) * speed01 * FORWARD_PUSH_AMOUNT;
-        const upwardPush = Math.max(0, oppositeProjection) * speed01 * UPWARD_PUSH_AMOUNT;
+        // Preserve true original aspect ratio without cropping
+        const h = slot.baseH * slot.size * centerScale * 1.15;
+        const w = h * aspect;
 
         return {
           i,
-          img: imgs[i % imgs.length],
-          x: x + dir.x * forwardPush,
-          y: y + dir.y * forwardPush - upwardPush,
-          w: slot.w * slot.size * scale,
-          h: slot.h * slot.size * scale
+          img,
+          x,
+          y,
+          w,
+          h
         };
       });
 
@@ -2642,7 +2591,7 @@
 
         const width = card.w * fitScale;
         const height = card.h * fitScale;
-        drawRoundedImage(ctx, card.img, -width / 2, -height / 2, width, height, 0);
+        drawOriginalAspectImage(ctx, card.img, -width / 2, -height / 2, width, height, 0);
         ctx.restore();
       }
 
@@ -2650,17 +2599,6 @@
     }
 
     window.addEventListener('resize', resize);
-    wrap.addEventListener('mousemove', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      pointer = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    });
-    wrap.addEventListener('touchmove', (e) => {
-      if (e.touches.length > 0) {
-        const rect = canvas.getBoundingClientRect();
-        pointer = { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
-      }
-    }, { passive: true });
-
     resize();
     requestAnimationFrame(frame);
   })();
