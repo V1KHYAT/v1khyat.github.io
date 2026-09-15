@@ -2432,20 +2432,18 @@
     pointer-events: none; 
   }
   .magnetic-cluster-canvas {
-    position: sticky;
+    position: absolute;
     top: 0; left: 0;
-    width: 100%; height: 100vh;
+    width: 100%; height: 100%;
     pointer-events: none;
     z-index: 2;
-  }
-  .gap_home_wrap {
-    position: relative; /* Ensure canvas bounds are correct */
   }
 </style>
 <script>
   (function() {
     const wrap = document.querySelector('.gap_home_wrap');
-    if (!wrap) return;
+    const contain = document.querySelector('.gap_home_contain');
+    if (!wrap || !contain) return;
 
     // The user's images are in gap_home_image, grab them before hiding cover
     const originalImages = Array.from(wrap.querySelectorAll('.gap_home_image'));
@@ -2457,7 +2455,7 @@
     // Insert Canvas
     const canvas = document.createElement('canvas');
     canvas.className = 'magnetic-cluster-canvas';
-    wrap.appendChild(canvas);
+    contain.appendChild(canvas);
     const ctx = canvas.getContext('2d');
 
     const SLOTS = [
@@ -2653,7 +2651,7 @@
 
     window.addEventListener('resize', resize);
     wrap.addEventListener('mousemove', (e) => {
-      const rect = wrap.getBoundingClientRect();
+      const rect = canvas.getBoundingClientRect();
       pointer = {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top,
@@ -2663,7 +2661,7 @@
     // Add touch support just in case
     wrap.addEventListener('touchmove', (e) => {
       if(e.touches.length > 0) {
-        const rect = wrap.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
         pointer = {
           x: e.touches[0].clientX - rect.left,
           y: e.touches[0].clientY - rect.top,
