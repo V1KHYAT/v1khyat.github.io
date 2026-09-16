@@ -33,12 +33,17 @@
         top: 0; 
         left: 0; 
         z-index: 100; 
-        padding: 1.5rem 2rem; 
+        padding: 1.5rem var(--site--margin); 
         box-sizing: border-box;
-        /* Removed mix-blend-mode */
+        transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
       }
       .dynamic-navbar * {
         color: var(--swatch--black-400) !important;
+      }
+      .is-scrolled .dynamic-navbar {
+        background-color: rgba(232, 231, 227, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
       }
       .nav-highlight-link {
           transition: opacity 0.3s ease;
@@ -47,12 +52,29 @@
       .nav-highlight-link:hover {
           opacity: 1;
       }
+      .nav-highlight-link.is-active {
+          opacity: 1;
+      }
 
       /* Case Study Layout */
       .case-study-wrap {
         padding-top: 15vh;
-        padding-bottom: 20vh;
+        padding-bottom: 0;
         width: 100%;
+      }
+
+      /* Footer Centering */
+      .footer_wrap_main {
+        position: relative;
+        width: 100%;
+      }
+      .footer_wrap {
+        min-height: 100vh;
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-sizing: border-box;
       }
       .case-study-content {
         max-width: 1000px;
@@ -2264,7 +2286,7 @@
           </div>
 
           <!-- 7. Reflections -->
-          <div id="reflections" style="display: flex; flex-direction: column; gap: 2.5rem; margin-bottom: 8rem;">
+          <div id="reflections" style="display: flex; flex-direction: column; gap: 2.5rem; margin-bottom: 12rem;">
             <h2 class="u-text-style-h2 animo-title">Reflections</h2>
             <div class="cs-text-group" style="display: flex; flex-direction: column; gap: 1.5rem;">
               <p class="u-text-style-main u-weight-light" style="max-width: 65ch; opacity: 0.85;">Tackling an enterprise giant like Webtel proves that heavy structural logic is just as important as visual aesthetics. Bypassing a 450 screen navigation problem with a fuzzy logic keyword search completely shifted my perspective on how to design for massive scale. Delivering actual responsive frontend frameworks instead of static mockups demonstrated how bridging the gap between design and engineering fundamentally accelerates product velocity.</p>
@@ -2272,7 +2294,9 @@
           </div>
           
         </div>
-<footer data-footer-parallax="" class="footer_wrap_main">
+      </main>
+
+      <footer data-footer-parallax="" class="footer_wrap_main">
           <!--$-->
           <div data-footer-parallax-inner="" class="footer_wrap">
             <div class="footer_top">
@@ -2337,8 +2361,8 @@
                 
               </div>
             </div>
-            </div></footer>
-</main>
+          </div>
+      </footer>
 
 
 <script>
@@ -2427,14 +2451,56 @@
 </script>
 
 <script>
-    // Navbar Title Scroll Fade
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 150) {
-            document.body.classList.add('is-scrolled');
-        } else {
-            document.body.classList.remove('is-scrolled');
+    // Navbar Title Scroll Fade & Section Spy
+    (function() {
+        const navLinks = document.querySelectorAll('.nav-highlight-link');
+        const sectionIds = ['cover', 'context', 'artifacts', 'key-moments', 'impact', 'reflections'];
+        const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+        const footer = document.querySelector('.footer_wrap_main');
+
+        function onScroll() {
+            const scrollY = window.scrollY;
+            const viewportHeight = window.innerHeight;
+
+            if (scrollY > 150) {
+                document.body.classList.add('is-scrolled');
+            } else {
+                document.body.classList.remove('is-scrolled');
+            }
+
+            // If footer is in view, clear section highlights
+            if (footer) {
+                const footerRect = footer.getBoundingClientRect();
+                if (footerRect.top <= viewportHeight * 0.5) {
+                    navLinks.forEach(l => l.classList.remove('is-active'));
+                    return;
+                }
+            }
+
+            let currentActiveId = '';
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const rect = sections[i].getBoundingClientRect();
+                if (rect.top <= viewportHeight * 0.45) {
+                    currentActiveId = sections[i].id;
+                    break;
+                }
+            }
+            if (!currentActiveId && sections.length > 0) {
+                currentActiveId = sections[0].id;
+            }
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === '#' + currentActiveId) {
+                    link.classList.add('is-active');
+                } else {
+                    link.classList.remove('is-active');
+                }
+            });
         }
-    });
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    })();
 </script>
 </body>
 </html>
