@@ -63,7 +63,7 @@
         width: 100%;
       }
 
-      /* Footer Centering */
+      /* Footer Centering & Elements */
       .footer_wrap_main {
         position: relative;
         width: 100%;
@@ -75,6 +75,38 @@
         flex-direction: column;
         justify-content: center;
         box-sizing: border-box;
+      }
+      .g_eyebrow_circle,
+      .about_modal_circle {
+        background-color: #141313 !important;
+      }
+
+      /* Hide native scrollbar to match the rest of the site */
+      ::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+      }
+      html, body {
+        -ms-overflow-style: none !important; 
+        scrollbar-width: none !important; 
+      }
+
+      /* Custom Floating Scrollbar Styles */
+      #custom-floating-scrollbar {
+        position: fixed;
+        right: 4px;
+        top: 0;
+        width: 4px;
+        background-color: rgba(20, 19, 19, 0.2);
+        border-radius: 10px;
+        z-index: 99999;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        opacity: 0;
+      }
+      #custom-floating-scrollbar.scrolling {
+        opacity: 1;
       }
       .case-study-content {
         max-width: 1000px;
@@ -2352,7 +2384,7 @@
                         <a href="https://vikhyatkaushik.lovable.app/" target="_blank" class="footer_socials_link w-inline-block"><div data-hover-heading="" class="footer_socials_text u-text-style-h4">Portfolio '25 ↗</div></a>
                       </li>
                       <li data-hover-highlight="link" class="footer_socials_li">
-                        <a href="#" target="_blank" class="footer_socials_link w-inline-block"><div data-hover-heading="" class="footer_socials_text u-text-style-h4">Resume ↗</div></a>
+                        <a href="Vikhyat-Kaushik-Resume.pdf" target="_blank" class="footer_socials_link w-inline-block"><div data-hover-heading="" class="footer_socials_text u-text-style-h4">Resume ↗</div></a>
                       </li></ul>
                     <!--/$-->
                   </nav>
@@ -2500,6 +2532,48 @@
 
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
+    })();
+</script>
+
+<div id="custom-floating-scrollbar"></div>
+<script>
+    (function() {
+        const scrollbar = document.getElementById('custom-floating-scrollbar');
+        if (!scrollbar) return;
+        let hideTimeout;
+        
+        function updateScrollbar() {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            if (documentHeight <= windowHeight) {
+                scrollbar.style.display = 'none';
+                return;
+            }
+            scrollbar.style.display = 'block';
+            
+            const offset = 12;
+            const availableHeight = windowHeight - (offset * 2);
+            const thumbHeight = Math.max((windowHeight / documentHeight) * availableHeight, 40);
+            const maxScroll = documentHeight - windowHeight;
+            const maxThumbTop = windowHeight - offset - thumbHeight;
+            const scrollFraction = scrollY / maxScroll;
+            const thumbTop = offset + (scrollFraction * (maxThumbTop - offset));
+            
+            scrollbar.style.height = thumbHeight + 'px';
+            scrollbar.style.transform = 'translateY(' + thumbTop + 'px)';
+            scrollbar.classList.add('scrolling');
+            
+            if (hideTimeout) clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => {
+                scrollbar.classList.remove('scrolling');
+            }, 800);
+        }
+        
+        window.addEventListener('scroll', updateScrollbar, { passive: true });
+        window.addEventListener('resize', updateScrollbar);
+        updateScrollbar();
     })();
 </script>
 </body>
