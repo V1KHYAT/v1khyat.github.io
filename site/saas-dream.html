@@ -9,8 +9,6 @@
     <link href="images/favicon.svg" rel="icon" type="image/svg+xml" sizes="32x32" media="(prefers-color-scheme: dark)">
     <link href="images/favicon.png" rel="apple-touch-icon">
 
-    <link href="css/normalize.css" rel="stylesheet" type="text/css">
-    <link href="css/components.css" rel="stylesheet" type="text/css">
     <link href="css/styles.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">
@@ -216,14 +214,38 @@
   .aspect-4-3 {
     width: 100%;
     aspect-ratio: 4/3;
-    background: #e0e0e0;
-    border-radius: 8px;
+    background-color: var(--swatch--beige-200, #e0e0e0);
+    border-radius: var(--radius--small, 8px);
     overflow: hidden;
+    overflow: clip;
+    contain: paint;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .aspect-4-3 img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
+  }
+  .aspect-4-3[data-scroll-container] {
+    position: relative;
+    overflow: hidden;
+    overflow: clip;
+    contain: paint;
+  }
+  .aspect-4-3[data-scroll-container] img[data-translate-hero="true"],
+  .case-study-parallax-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.18);
+    will-change: transform;
+    pointer-events: none;
   }
 
   
@@ -363,14 +385,34 @@
   .aspect-4-3 {
     width: 100%;
     aspect-ratio: 4/3;
-    background: #e0e0e0;
-    border-radius: 8px;
+    background-color: var(--swatch--beige-200, #e0e0e0);
+    border-radius: var(--radius--small, 8px);
     overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .aspect-4-3 img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
+  }
+  .aspect-4-3[data-scroll-container] {
+    position: relative;
+    overflow: hidden;
+  }
+  .aspect-4-3[data-scroll-container] img[data-translate-hero="true"],
+  .case-study-parallax-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.18);
+    will-change: transform;
+    pointer-events: none;
   }
 
   </style>
@@ -2188,22 +2230,22 @@
             <h2 class="u-text-style-h2 animo-title">The Ecosystem</h2>
             <div style="display: flex; flex-direction: column; gap: 4rem;">
               <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                <div class="aspect-4-3">
-                  <img src="https://placehold.co/1600x1200/e0e0e0/888888?text=The+Modern+ESS+Portal" alt="The Modern ESS Portal">
+                <div class="aspect-4-3" data-scroll-container="" data-start="top bottom" data-target-translate="70">
+                  <img src="images/The SaaS Dream/Modern ESS.png" loading="lazy" data-translate-hero="true" alt="Modern ESS" class="case-study-parallax-img">
                 </div>
-                <h3 class="u-text-style-h4">The Modern ESS Portal</h3>
+                <h3 class="u-text-style-h4">Modern ESS</h3>
               </div>
               <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                <div class="aspect-4-3">
-                  <img src="https://placehold.co/1600x1200/e0e0e0/888888?text=Unified+Mobile+Application" alt="The Unified Mobile Application">
+                <div class="aspect-4-3" data-scroll-container="" data-start="top bottom" data-target-translate="70">
+                  <img src="images/The SaaS Dream/Unified Mobile Application.png" loading="lazy" data-translate-hero="true" alt="Unified Mobile Application" class="case-study-parallax-img">
                 </div>
-                <h3 class="u-text-style-h4">The Unified Mobile Application</h3>
+                <h3 class="u-text-style-h4">Unified Mobile Application</h3>
               </div>
               <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                <div class="aspect-4-3">
-                  <img src="https://placehold.co/1600x1200/e0e0e0/888888?text=The+HR+Admin+Centre" alt="The HR Admin Centre">
+                <div class="aspect-4-3" data-scroll-container="" data-start="top bottom" data-target-translate="70">
+                  <img src="images/The SaaS Dream/HR Admin Panel.png" loading="lazy" data-translate-hero="true" alt="HR Admin Panel" class="case-study-parallax-img">
                 </div>
-                <h3 class="u-text-style-h4">The HR Admin Centre</h3>
+                <h3 class="u-text-style-h4">HR Admin Panel</h3>
               </div>
             </div>
           </div>
@@ -2574,6 +2616,68 @@
         window.addEventListener('scroll', updateScrollbar, { passive: true });
         window.addEventListener('resize', updateScrollbar);
         updateScrollbar();
+    })();
+</script>
+
+<!-- GSAP & ScrollTrigger for Case Study Parallax Scroll Effect -->
+<script src="js/gsap.min.js"></script>
+<script src="js/ScrollTrigger.min.js"></script>
+<script>
+    (function() {
+        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+        gsap.registerPlugin(ScrollTrigger);
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        function initCaseStudyParallax() {
+            const containers = document.querySelectorAll('[data-scroll-container]');
+            if (!containers.length) return;
+
+            containers.forEach(container => {
+                const images = container.querySelectorAll('[data-translate-hero="true"]');
+                if (!images.length) return;
+
+                const containerH = container.offsetHeight || 500;
+                const responsiveTranslate = Math.min(Math.max(Math.round(containerH * 0.085), 30), 75);
+                const u = parseFloat(container.dataset.targetTranslate) || responsiveTranslate;
+                const g = container.dataset.inverseTranslate ? parseFloat(container.dataset.inverseTranslate) : -u;
+                const start = container.dataset.start || 'top bottom';
+                const end = container.dataset.end || 'bottom top';
+
+                images.forEach(img => {
+                    gsap.fromTo(img,
+                        { y: g, scale: 1.18 },
+                        {
+                            y: u,
+                            scale: 1.18,
+                            ease: 'none',
+                            scrollTrigger: {
+                                trigger: container,
+                                start: start,
+                                end: end,
+                                scrub: 0.3,
+                                invalidateOnRefresh: true
+                            }
+                        }
+                    );
+
+                    if (!img.complete) {
+                        img.addEventListener('load', () => ScrollTrigger.refresh());
+                    }
+                });
+            });
+            ScrollTrigger.refresh();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCaseStudyParallax);
+        } else {
+            initCaseStudyParallax();
+        }
+
+        window.addEventListener('resize', () => {
+            ScrollTrigger.refresh();
+        });
     })();
 </script>
 </body>
