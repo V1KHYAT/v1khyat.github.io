@@ -224,7 +224,8 @@
     justify-content: center;
     align-items: center;
   }
-  .aspect-4-3 img {
+  .aspect-4-3 img,
+  .aspect-4-3 video {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -246,29 +247,6 @@
     transform: scale(1.18);
     will-change: transform;
     pointer-events: none;
-  }
-
-  .aspect-3-4 {
-    width: 100%;
-    max-width: 650px;
-    margin: 1rem auto 0 auto;
-    aspect-ratio: 3/4;
-    background-color: var(--swatch--beige-200, #e0e0e0);
-    border-radius: var(--radius--small, 8px);
-    overflow: hidden;
-    overflow: clip;
-    contain: paint;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .aspect-3-4 video,
-  .aspect-3-4 img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
   }
 
   
@@ -2207,7 +2185,7 @@
             <p class="u-text-style-h4" style="opacity: 0.8;">Redesigning HR, Employee Self Service, and Mobile Payroll for 30,000 corporate clients.</p>
             
             <div class="aspect-4-3" style="margin-top: 1rem; position: relative;">
-              <img src="https://placehold.co/1600x1200/e0e0e0/888888?text=The+Enterprise+Ecosystem+Render" alt="The Enterprise Ecosystem Render">
+              <video src="media/The SaaS Dream/project-cover.mp4" autoplay loop muted playsinline preload="auto" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit;"></video>
             </div>
           </div>
 
@@ -2239,8 +2217,8 @@
               <p class="u-text-style-main u-weight-light" style="max-width: 65ch; opacity: 0.85;">End users were forced to juggle two separate mobile apps just to check their attendance and download a payslip. Meanwhile, HR administrators were trapped inside a 450 screen maze on the desktop suite. Whenever users got lost, they flooded the Webtel support desks with calls.</p>
             </div>
             
-            <div class="aspect-3-4" style="margin-top: 1rem; position: relative;">
-              <video src="media/The SaaS Dream/context-video.mp4" autoplay loop muted playsinline preload="auto" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit;"></video>
+            <div class="aspect-4-3" style="margin-top: 1rem; position: relative;">
+              <img src="https://placehold.co/1600x1200/e0e0e0/888888?text=The+Fragmentation+Tax+Diagram" alt="The Fragmentation Tax Diagram">
             </div>
             
             <div class="cs-text-group" style="display: flex; flex-direction: column; gap: 1.5rem;">
