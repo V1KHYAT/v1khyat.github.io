@@ -32,7 +32,6 @@
     var wrap = canvas.parentElement;
     if (wrap) {
         wrap.style.background = 'linear-gradient(180deg, #E8EAEE, #B7BDC9, #8C94A4, #596273)';
-        wrap.style.position = 'relative'; // ensure wrapper is relative
     }
     
     // Setup canvas styling
