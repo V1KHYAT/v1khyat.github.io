@@ -2222,7 +2222,7 @@
     function frame(now) {
       const W = canvas.clientWidth;
       const H = canvas.clientHeight;
-      const fitScale = W < 768 ? Math.min(2.5, W / 250) : Math.min(3.0, W / 450);
+      const fitScale = W < 768 ? Math.min(1.25, W / 320) : Math.min(1.4, W / 800);
       ctx.clearRect(0, 0, W, H);
 
       const dt = Math.min(32, now - (lastTime || now));
@@ -2232,7 +2232,7 @@
 
       // Center of container
       const cx = W / 2;
-      const cy = H / 2;
+      const cy = H / 2 - (H * 0.08);
 
       const cards = SLOTS.map((slot, i) => {
         const n = SLOTS.length;
