@@ -1939,20 +1939,21 @@
 <main class="case-study-wrap">
 <style id="saas-dream-dark-theme">
   /* Force dark background for the page wrapper and body */
-  body, html, .case-study-wrap {
+  body, html, .case-study-wrap, .footer_wrap_main {
     background-color: #080807 !important;
     color: #e8e8e3 !important;
   }
   
   /* Make all text elements within the case study light */
-  .case-study-wrap * {
+  .case-study-wrap *, .footer_wrap_main * {
     color: #e8e8e3 !important;
   }
   
   /* Keep specific overrides working if needed, but ensure readability */
   .case-study-wrap .animo-title, 
   .case-study-wrap h1, .case-study-wrap h2, .case-study-wrap h3, 
-  .case-study-wrap p, .case-study-wrap span {
+  .case-study-wrap p, .case-study-wrap span, 
+  .footer_wrap_main h1, .footer_wrap_main h2, .footer_wrap_main h3, .footer_wrap_main p, .footer_wrap_main span, .footer_wrap_main a {
     color: #e8e8e3 !important;
   }
   
