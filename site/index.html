@@ -2174,14 +2174,10 @@
 
     const SLOTS = [
       { y: 0, size: 1.25, baseH: 195 },
-      { y: -30, size: 1.15, baseH: 185 },
-      { y: 30, size: 1.20, baseH: 190 },
-      { y: -60, size: 1.10, baseH: 175 },
-      { y: 60, size: 1.10, baseH: 175 },
-      { y: -94, size: 0.95, baseH: 155 },
-      { y: 94, size: 0.95, baseH: 155 },
-      { y: -122, size: 0.85, baseH: 140 },
-      { y: 122, size: 0.85, baseH: 140 }
+      { y: -45, size: 1.15, baseH: 185 },
+      { y: 45, size: 1.20, baseH: 190 },
+      { y: -90, size: 1.10, baseH: 175 },
+      { y: 90, size: 1.10, baseH: 175 }
     ];
 
     const SPEED = 0.000075; // smooth and slightly slower
@@ -2226,7 +2222,7 @@
     function frame(now) {
       const W = canvas.clientWidth;
       const H = canvas.clientHeight;
-      const fitScale = W < 768 ? Math.min(1.4, W / 400) : Math.min(1.6, W / 800);
+      const fitScale = W < 768 ? Math.min(2.5, W / 250) : Math.min(3.0, W / 450);
       ctx.clearRect(0, 0, W, H);
 
       const dt = Math.min(32, now - (lastTime || now));
