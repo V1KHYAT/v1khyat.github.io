@@ -15,8 +15,8 @@
       body.body, html {
         margin: 0;
         padding: 0;
-        background-color: var(--swatch--black-400) !important;
-        color: var(--swatch--black-400) !important;
+        background-color: #e8e8e3 !important;
+        color: #e8e8e3 !important;
         font-family: var(--_typography---font--primary-family);
         scroll-behavior: smooth;
       }
@@ -33,7 +33,7 @@
         transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
       }
       .dynamic-navbar * {
-        color: var(--swatch--black-400) !important;
+        color: #e8e8e3 !important;
       }
       .is-scrolled .dynamic-navbar {
         background-color: rgba(232, 231, 227, 0.85);
@@ -1937,6 +1937,46 @@
 </div>
 </header>
 <main class="case-study-wrap">
+<style id="saas-dream-dark-theme">
+  /* Force dark background for the page wrapper and body */
+  body, html, .case-study-wrap {
+    background-color: #080807 !important;
+    color: #e8e8e3 !important;
+  }
+  
+  /* Make all text elements within the case study light */
+  .case-study-wrap * {
+    color: #e8e8e3 !important;
+  }
+  
+  /* Keep specific overrides working if needed, but ensure readability */
+  .case-study-wrap .animo-title, 
+  .case-study-wrap h1, .case-study-wrap h2, .case-study-wrap h3, 
+  .case-study-wrap p, .case-study-wrap span {
+    color: #e8e8e3 !important;
+  }
+  
+  /* Navbar must be readable over dark */
+  .dynamic-navbar {
+    background-color: transparent !important;
+  }
+  .is-scrolled .dynamic-navbar {
+    background-color: rgba(8, 8, 7, 0.85) !important;
+  }
+  .dynamic-navbar *, .dynamic-navbar a {
+    color: #e8e8e3 !important;
+  }
+  
+  /* Specific component fixes for dark mode */
+  .moment-card {
+    border-left: none !important;
+    padding-left: 0 !important;
+  }
+  .impact-card {
+    border: 1px solid rgba(255,255,255,0.1) !important;
+  }
+</style>
+
 <div class="case-study-content">
 <!-- 1. Project cover -->
 <div id="cover" style="display: flex; flex-direction: column; gap: 2rem;">
