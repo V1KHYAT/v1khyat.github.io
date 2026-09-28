@@ -34,7 +34,7 @@
     opacity: 0.85
   };
 
-  var INK_COLOR = { r: 1.0, g: 1.0, b: 1.0 };
+  var INK_COLOR = { r: 0x08 / 255, g: 0x08 / 255, b: 0x07 / 255 };
 
   /* Aberration fringe tints - clean and vivid, warm-leaning to suit the gradient */
   var FRINGE_R = [1.0, 0.28, 0.15];  // coral red
