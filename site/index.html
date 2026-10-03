@@ -316,6 +316,40 @@
       }
     }
   </style>
+
+<style>
+  .gap_home_cover {
+    width: 35vw !important; /* Bigger than column-width-3 */
+    max-width: 500px !important;
+    min-width: 280px !important;
+    aspect-ratio: 4/5 !important;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .gap_home_cover {
+      width: 70vw !important;
+    }
+  }
+</style>
+
+
+<style>
+  .gap_home_image {
+    opacity: 0;
+    animation: gapSlideshow 15s infinite;
+  }
+  .gap_home_image:nth-child(2) { animation-delay: 0s; }
+  .gap_home_image:nth-child(3) { animation-delay: 3s; }
+  .gap_home_image:nth-child(4) { animation-delay: 6s; }
+  .gap_home_image:nth-child(5) { animation-delay: 9s; }
+  .gap_home_image:nth-child(6) { animation-delay: 12s; }
+  
+  @keyframes gapSlideshow {
+    0%, 20% { opacity: 1; }
+    25%, 100% { opacity: 0; }
+  }
+</style>
+
 </head><!--/$-->
 <body class="body" data-about-status="is-closed" data-barba="wrapper" data-navigation-status="is-close" data-scroll-time="0" data-theme-nav="light">
 <div aria-hidden="true" class="vkh_preloader" id="vkh_preloader">
