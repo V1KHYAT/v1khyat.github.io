@@ -401,3 +401,28 @@ body:not(.vkh-boot-done) .vkh_canvas_distortion{opacity:0 !important;filter:blur
     
 
 
+
+/* Mobile Responsiveness Fixes */
+@media screen and (max-width: 991px) {
+  /* Remove hover images on mobile projects */
+  .works_home_item .reel_home_cover { display: none !important; }
+  /* Enforce 3:2 aspect ratio on mobile projects, not 1:1 */
+  .works_home_cover.u-ratio-1-1 { aspect-ratio: 3/2 !important; height: auto !important; }
+  /* Remove second part of projects on mobile */
+  .works_home_item .works_home_result { display: none !important; }
+}
+
+@media screen and (max-width: 767px) {
+  /* Fix SaaS dream title bleeding */
+  h1.animo-title, .animo-title.u-text-style-h1 {
+    font-size: clamp(2rem, 10vw, 3.5rem) !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;
+    text-wrap: wrap !important;
+    max-width: 100% !important;
+  }
+  /* Hide custom navlinks on phone */
+  .dynamic-navbar-links, .navbar-nav-links {
+    display: none !important;
+  }
+}

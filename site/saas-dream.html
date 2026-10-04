@@ -1917,7 +1917,7 @@
 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
 <!-- Close Button & Project Name (Left) -->
 <div style="display: flex; align-items: center; gap: 2rem;">
-<a aria-label="Close project" class="navbar_link project-close-btn w-inline-block" href="work.html" style="text-decoration: none;">
+<a aria-label="Close project" class="navbar_link project-close-btn w-inline-block" href="work.html" style="text-decoration: none;" onclick="if(document.referrer && document.referrer.includes(window.location.host)) { history.back(); return false; } else { window.location.href='index.html'; return false; }">
 <div class="footer_nav_span u-text-style-main" style="font-size: 1.25rem; line-height: 1; padding: 0.25rem;">✕</div>
 </a>
 <!-- Starts hidden, fades in on scroll -->
@@ -1968,6 +1968,22 @@
     color: #e8e8e3 !important;
   }
   
+  
+  
+  /* Fix footer socials li beige background */
+  .footer_wrap .footer_socials_li {
+    background-color: transparent !important;
+  }
+
+  /* Fix footer links hover highlight on dark mode */
+  .footer_wrap [data-hover-highlight]:hover [data-hover-heading],
+  .footer_wrap [data-hover-highlight]:hover [data-footer-arrow] {
+    color: #e8e8e3 !important;
+  }
+  .footer_wrap [data-hover-highlight]:hover {
+    background-color: transparent !important;
+  }
+
   /* Specific component fixes for dark mode */
   .moment-card {
     border-left: none !important;
@@ -1991,7 +2007,7 @@
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; border-top: 1px solid rgba(0,0,0,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 2rem 0; margin-top: 4rem;">
 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
 <div style="font-weight: 400; opacity: 0.5;">Role</div>
-<div>Sole Product Designer</div>
+<div>Product Designer</div>
 </div>
 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
 <div style="font-weight: 400; opacity: 0.5;">Timeline</div>
@@ -1999,7 +2015,7 @@
 </div>
 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
 <div style="font-weight: 400; opacity: 0.5;">Team</div>
-<div>1 Designer</div>
+<div>Sole Designer</div>
 </div>
 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
 <div style="font-weight: 400; opacity: 0.5;">Skills</div>
@@ -2053,7 +2069,7 @@
 <!-- 5. Key design moments -->
 <div id="key-moments" style="display: flex; flex-direction: column; gap: 2.5rem;">
 <h2 class="u-text-style-h2 animo-title">Key design moments</h2>
-<div class="grid-2x2">
+<div style="display: flex; flex-direction: column; gap: 4rem; margin-top: 2rem;">
 <!-- Insight 1 -->
 <div style="display: flex; flex-direction: column; gap: 2.5rem;">
 <div class="aspect-4-3" style="position: relative;">
