@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Why Opening Up Is Hard | Project</title>
+    <title>Samsung Prism Hackathon | Project</title>
     <meta content="width=device-width, initial-scale=1" name="viewport">
     
     <link href="images/favicon.svg" rel="icon" type="image/svg+xml" sizes="32x32" media="(prefers-color-scheme: light)">
@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Yatra+One&display=swap" rel="stylesheet">
     <!-- Preload first image for faster initial render -->
-    <link rel="preload" as="image" href="images/Opening Up Is Hard/Project/Overview.webp">
+    <link rel="preload" as="image" href="images/Samsung 2025/01.webp">
     
     <style>
       body.body, html {
@@ -145,7 +145,7 @@
                 </a>
                 <!-- Starts hidden, fades in on scroll -->
                 <div class="navbar_cta_wrap u-text-style-small u-text-trim-off project-navbar-title">
-                    Why Opening Up Is Hard
+                    PRISM HACKATHON
                 </div>
             </div>
 
@@ -162,33 +162,40 @@
 
     <!-- Project Viewer Frame -->
     <div class="project-viewer-frame">
-        <div id="overview" class="project-section" style="width: 100%;">
-            <!-- Eager loading for top images to prevent decoding lag during animation -->
-            <link rel="preload" as="image" href="images/Opening Up Is Hard/Project/Overview.webp">
-            <img src="images/Opening Up Is Hard/Project/Overview.webp" loading="eager" decoding="sync" style="width: 100%; height: auto; display: block;" />
-        </div>
-        <div id="research" class="project-section" style="width: 100%;">
-            <!-- Eager loading so it's fully rendered before the viewer expands down into it -->
-            <img src="images/Opening Up Is Hard/Project/Research.webp" loading="eager" decoding="sync" style="width: 100%; height: auto; display: block;" />
-        </div>
-        <div id="behaviour" class="project-section" style="width: 100%;">
-            <!-- Eager loading to prevent mid-animation layout freezes -->
-            <img src="images/Opening Up Is Hard/Project/Behavior Analysis.webp" loading="eager" decoding="sync" style="width: 100%; height: auto; display: block;" />
-        </div>
-        <div id="concept" class="project-section" style="width: 100%;">
-            <img src="images/Opening Up Is Hard/Project/Concept Exploration.webp" loading="eager" decoding="async" style="width: 100%; height: auto; display: block;" />
-        </div>
-        <div id="relay" class="project-section" style="width: 100%;">
-            <img src="images/Opening Up Is Hard/Project/Relay Product.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
-        </div>
-        <div id="video" class="project-section" style="width: 100%;">
-            <video src="images/Opening Up Is Hard/Project/Video.mp4" controls preload="metadata" style="width: 100%; height: auto; display: block;"></video>
-        </div>
-        <div id="thankyou" class="project-section" style="width: 100%;">
-            <img src="images/Opening Up Is Hard/Project/Thank You.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
-        </div>
+    <div id="slide01" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/01.webp" loading="eager" decoding="sync" style="width: 100%; height: auto; display: block;" />
     </div>
-
+    <div id="slide02" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/02.webp" loading="eager" decoding="sync" style="width: 100%; height: auto; display: block;" />
+    </div>
+    <div id="slide03" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/03.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
+    </div>
+    <div id="slide04" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/04.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
+    </div>
+    <div id="slide05" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/05.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
+    </div>
+    <div id="slide06" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/06.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
+    </div>
+    <div id="slide07" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/07.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
+    </div>
+    <div id="slide08" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/08.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
+    </div>
+    <div id="slide09" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/09.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
+    </div>
+    <div id="slide10" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/10.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
+    </div>
+    <div id="slide11" class="project-section" style="width: 100%;">
+        <img src="images/Samsung 2025/11.webp" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;" />
+    </div>
+</div>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const viewer = document.querySelector('.project-viewer-frame');
