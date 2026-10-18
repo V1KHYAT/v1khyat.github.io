@@ -1503,6 +1503,26 @@ window.si = window.si || function () { (window.siq = window.siq || []).push(argu
 <script src="js/portfolio-global.js"></script>
 <div id="custom-floating-scrollbar"></div>
 <script>
+      // Save return URL & scroll position before navigating to project pages
+      document.addEventListener('click', function(e) {
+        var link = e.target.closest('a.work_project_link');
+        if (link && !link.hasAttribute('target')) {
+          sessionStorage.setItem('portfolio_return_url', window.location.href);
+          sessionStorage.setItem('workScrollY', window.scrollY.toString());
+        }
+      });
+      // Restore scroll position when returning from a project
+      (function() {
+        var savedY = sessionStorage.getItem('workScrollY');
+        if (savedY) {
+          requestAnimationFrame(function() {
+            window.scrollTo(0, parseInt(savedY, 10));
+            sessionStorage.removeItem('workScrollY');
+          });
+        }
+      })();
+    </script>
+<script>
       (function() {
         const scrollbar = document.getElementById('custom-floating-scrollbar');
         let hideTimeout = null;

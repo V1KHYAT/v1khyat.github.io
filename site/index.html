@@ -2163,7 +2163,7 @@ window.si = window.si || function () { (window.siq = window.siq || []).push(argu
 <script>
       // Save return URL & scroll position before navigating to project pages
       document.addEventListener('click', function(e) {
-        var link = e.target.closest('a[href*="project-"]');
+        var link = e.target.closest('a.works_home_link');
         if (link) {
           sessionStorage.setItem('portfolio_return_url', window.location.href);
           sessionStorage.setItem('indexScrollY', window.scrollY.toString());
