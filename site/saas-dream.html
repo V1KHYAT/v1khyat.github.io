@@ -1943,7 +1943,7 @@ window.si = window.si || function () { (window.siq = window.siq || []).push(argu
 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
 <!-- Close Button & Project Name (Left) -->
 <div style="display: flex; align-items: center; gap: 2rem;">
-<a aria-label="Close project" class="navbar_link project-close-btn w-inline-block" href="work.html" style="text-decoration: none;" onclick="if(document.referrer && document.referrer.includes(window.location.host)) { history.back(); return false; } else { window.location.href='index.html'; return false; }">
+<a aria-label="Close project" class="navbar_link project-close-btn w-inline-block" href="work.html" style="text-decoration: none;">
 <div class="footer_nav_span u-text-style-main" style="font-size: 1.25rem; line-height: 1; padding: 0.25rem;">✕</div>
 </a>
 <!-- Starts hidden, fades in on scroll -->
@@ -2521,6 +2521,31 @@ window.si = window.si || function () { (window.siq = window.siq || []).push(argu
             ScrollTrigger.refresh();
         });
     })();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    function closeProject(e) {
+        if (e) e.preventDefault();
+        const returnUrl = sessionStorage.getItem('portfolio_return_url');
+        if (returnUrl && (returnUrl.includes('work') || returnUrl.includes('index') || returnUrl.endsWith('/') || returnUrl.includes('play'))) {
+            window.location.href = returnUrl;
+        } else if (document.referrer && document.referrer.includes(window.location.host)) {
+            window.location.href = document.referrer;
+        } else {
+            window.location.href = 'work.html';
+        }
+    }
+
+    document.querySelectorAll('.project-close-btn').forEach(btn => {
+        btn.addEventListener('click', closeProject);
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeProject();
+        }
+    });
+});
 </script>
 </body>
 </html>
