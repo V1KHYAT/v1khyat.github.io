@@ -2172,11 +2172,17 @@ window.si = window.si || function () { (window.siq = window.siq || []).push(argu
       // Restore scroll position when returning from a project
       (function() {
         var savedY = sessionStorage.getItem('indexScrollY');
-        if (savedY) {
-          requestAnimationFrame(function() {
-            window.scrollTo(0, parseInt(savedY, 10));
-            sessionStorage.removeItem('indexScrollY');
-          });
+        if (savedY !== null) {
+          var targetY = parseInt(savedY, 10);
+          var restore = function() {
+            // Wait for the initial forced scroll-to-top (Lenis init) to finish
+            setTimeout(function() {
+              window.scrollTo(0, targetY);
+              sessionStorage.removeItem('indexScrollY');
+            }, 1200);
+          };
+          if (document.readyState === 'complete') restore();
+          else window.addEventListener('load', restore);
         }
       })();
     </script>
